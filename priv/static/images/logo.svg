@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" role="img" aria-label="CheckSignature">
+  <rect width="48" height="48" rx="10" fill="#0F172A" />
+  <path
+    d="M15 11h12l7 7v17.5a2.5 2.5 0 0 1-2.5 2.5H15a2.5 2.5 0 0 1-2.5-2.5v-22A2.5 2.5 0 0 1 15 11Z"
+    fill="#F8FAFC"
+  />
+  <path d="M27 11v7h7" stroke="#CBD5E1" stroke-width="1.6" stroke-linejoin="round" />
+  <path
+    d="M17.5 21h9M17.5 25.5h7M17.5 30h4"
+    stroke="#94A3B8"
+    stroke-width="1.8"
+    stroke-linecap="round"
+  />
+  <circle cx="31.5" cy="31.5" r="8.5" fill="#22C55E" stroke="#0F172A" stroke-width="1.5" />
+  <path
+    d="M27.8 31.7l2.5 2.5 4.6-5.2"
+    stroke="#fff"
+    stroke-width="2.2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

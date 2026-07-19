@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprawdź Orzeczenie — bezpłatna weryfikacja sygnatur orzeczeń w dokumentach prawnych</title>
+<meta name="description" content="Wklej pismo i sprawdź, czy powołane sygnatury orzeczeń naprawdę istnieją. Sprawdź Orzeczenie wykrywa zmyślone orzeczenia w dokumentach generowanych przez AI — bezpłatnie.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F7F7F3;
+  --card:#FFFFFF;
+  --ink:#1A2233;
+  --ink-soft:#4A5468;
+  --line:#DDDFD6;
+  --stamp-red:#B3202C;
+  --verified:#1E6E48;
+  --amber:#8A6200;
+  --navy:#22314F;
+  --radius:10px;
+  font-size:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'IBM Plex Sans',system-ui,sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:'Spectral',Georgia,serif;line-height:1.15;font-weight:600;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+a{color:var(--navy);}
+a:focus-visible,button:focus-visible{outline:3px solid var(--stamp-red);outline-offset:3px;border-radius:4px;}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
+
+/* ---------- nav ---------- */
+nav{
+  border-bottom:1px solid var(--line);
+  background:var(--paper);
+  position:sticky;top:0;z-index:50;
+}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 0;}
+.logo{display:flex;align-items:baseline;gap:10px;text-decoration:none;color:var(--ink);}
+.logo .mark{
+  font-family:'Spectral',serif;font-weight:700;font-size:1.35rem;
+  color:var(--stamp-red);
+}
+.logo .name{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:1.02rem;letter-spacing:.01em;}
+.nav-links{display:flex;align-items:center;gap:26px;}
+.nav-links a{font-size:.92rem;text-decoration:none;color:var(--ink-soft);}
+.nav-links a:hover{color:var(--ink);}
+.nav-links a.btn,.nav-links a.btn:hover{color:#fff;}
+.btn{
+  display:inline-block;background:var(--navy);color:#fff;text-decoration:none;
+  padding:11px 22px;border-radius:var(--radius);font-weight:600;font-size:.95rem;
+  border:none;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;
+  transition:background .15s ease;
+}
+.btn:hover{background:#182640;}
+.btn.red{background:var(--stamp-red);}
+.btn.red:hover{background:#951A24;}
+.btn[disabled]{opacity:.55;cursor:wait;}
+@media(max-width:640px){.nav-links a:not(.btn){display:none;}}
+
+/* ---------- hero ---------- */
+.hero{padding:64px 0 64px;}
+.hero-intro{max-width:760px;margin-bottom:40px;}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;font-size:.78rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--stamp-red);margin-bottom:18px;
+}
+.hero h1{font-size:clamp(2.1rem,4.6vw,3.1rem);margin-bottom:20px;}
+.hero h1 em{font-style:italic;font-weight:600;color:var(--stamp-red);}
+.hero .lede{font-size:1.13rem;color:var(--ink-soft);max-width:38em;}
+
+/* ---------- checker ---------- */
+.checker{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  box-shadow:0 18px 50px -24px rgba(26,34,51,.28);
+  overflow:hidden;
+}
+.checker-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  padding:14px 22px;border-bottom:1px solid var(--line);
+  font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:var(--ink-soft);
+}
+.checker-head .free{
+  color:var(--verified);font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+}
+.checker-body{padding:22px;}
+.checker textarea{
+  width:100%;min-height:230px;resize:vertical;
+  font-family:'Spectral',Georgia,serif;font-size:1rem;line-height:1.65;color:var(--ink);
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 18px;
+}
+.checker textarea::placeholder{color:#9AA1AF;}
+.checker textarea:focus{
+  outline:none;border-color:var(--navy);
+  box-shadow:0 0 0 3px rgba(34,49,79,.12);
+}
+.checker-actions{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  margin-top:16px;
+}
+.live-count{font-size:.88rem;color:var(--ink-soft);}
+.live-count strong{color:var(--ink);}
+
+/* results */
+.results{border-top:1px dashed var(--line);margin-top:22px;padding-top:8px;}
+.results[hidden]{display:none;}
+.results-label{
+  margin:14px 0 6px;font-family:'IBM Plex Mono',monospace;font-size:.72rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);
+}
+.verdict-row{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:12px 0;border-bottom:1px dashed var(--line);
+}
+.verdict-row:last-child{border-bottom:none;}
+.verdict-row .sig-cell{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:.92rem;}
+.verdict-row .src{display:block;font-size:.76rem;color:var(--ink-soft);font-weight:400;margin-top:2px;font-family:'IBM Plex Sans',sans-serif;}
+.verdict-row .src a{color:var(--verified);}
+.stamp{
+  font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:.72rem;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:6px 12px;border:2px solid currentColor;border-radius:4px;
+  transform:rotate(-3deg);white-space:nowrap;flex-shrink:0;
+}
+.stamp.ok{color:var(--verified);}
+.stamp.no{color:var(--stamp-red);}
+.stamp.meh{color:var(--amber);transform:rotate(2deg);}
+.stamp.wait{color:var(--ink-soft);transform:none;border-style:dashed;}
+.stamp.pop{animation:thump .35s cubic-bezier(.2,1.4,.4,1) both;}
+@keyframes thump{
+  from{opacity:0;transform:rotate(-3deg) scale(1.5);}
+  to{opacity:1;transform:rotate(-3deg) scale(1);}
+}
+@media(prefers-reduced-motion:reduce){
+  .stamp.pop{animation:none;}
+  html{scroll-behavior:auto;}
+}
+.notice{
+  margin-top:16px;border:1px dashed var(--line);border-radius:var(--radius);
+  padding:14px 18px;font-size:.9rem;color:var(--ink-soft);
+}
+.notice.err{border-color:var(--stamp-red);color:var(--stamp-red);}
+.notice[hidden]{display:none;}
+
+/* ---------- sections ---------- */
+section{padding:72px 0;}
+section.alt{background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.sec-head{max-width:640px;margin-bottom:44px;}
+.sec-head h2{font-size:clamp(1.6rem,3vw,2.2rem);margin-bottom:14px;}
+.sec-head p{color:var(--ink-soft);font-size:1.05rem;}
+
+/* problem */
+.problem-quote{
+  font-family:'Spectral',serif;font-style:italic;font-size:clamp(1.25rem,2.6vw,1.7rem);
+  max-width:30em;color:var(--ink);border-left:3px solid var(--stamp-red);
+  padding-left:24px;margin-bottom:22px;
+}
+.problem p{max-width:40em;color:var(--ink-soft);}
+
+/* how it works */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+@media(max-width:820px){.steps{grid-template-columns:1fr;}}
+.step{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:26px 24px;
+}
+section.alt .step{background:var(--paper);}
+.step .k{
+  font-family:'IBM Plex Mono',monospace;font-size:.75rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--stamp-red);margin-bottom:12px;
+}
+.step h3{font-size:1.2rem;margin-bottom:10px;}
+.step p{font-size:.95rem;color:var(--ink-soft);}
+
+/* verdicts */
+.verdicts{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+@media(max-width:820px){.verdicts{grid-template-columns:1fr;}}
+.vcard{border:1px solid var(--line);border-radius:var(--radius);padding:26px 24px;background:var(--card);}
+.vcard .stamp{display:inline-block;margin-bottom:16px;}
+.vcard h3{font-size:1.15rem;margin-bottom:10px;}
+.vcard p{font-size:.95rem;color:var(--ink-soft);}
+
+/* sources */
+.sources{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+@media(max-width:820px){.sources{grid-template-columns:1fr;}}
+.source{
+  border:1px solid var(--line);border-radius:var(--radius);padding:24px;background:var(--paper);
+}
+.source .mono{font-size:.82rem;color:var(--ink-soft);display:block;margin-top:6px;}
+.source h3{font-size:1.1rem;}
+.privacy{
+  margin-top:40px;border:1px dashed var(--line);border-radius:var(--radius);
+  padding:20px 24px;display:flex;gap:14px;align-items:flex-start;max-width:760px;
+}
+.privacy .mark{font-family:'Spectral',serif;font-weight:700;color:var(--stamp-red);font-size:1.3rem;line-height:1.2;}
+.privacy p{font-size:.93rem;color:var(--ink-soft);}
+
+/* cta / footer */
+.final{padding:88px 0;text-align:center;background:var(--navy);color:#fff;}
+.final h2{font-size:clamp(1.7rem,3.4vw,2.4rem);margin-bottom:16px;color:#fff;}
+.final p{color:#C4CCDC;max-width:34em;margin:0 auto 30px;}
+footer{padding:34px 0;font-size:.85rem;color:var(--ink-soft);}
+.foot-inner{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-inner">
+    <a class="logo" href="#top" aria-label="Sprawdź Orzeczenie — strona główna">
+      <span class="mark">§</span><span class="name">Sprawdź Orzeczenie</span>
+    </a>
+    <div class="nav-links">
+      <a href="#jak-to-dziala">Jak to działa</a>
+      <a href="#werdykty">Werdykty</a>
+      <a href="#zrodla">Źródła</a>
+      <a class="btn red" href="#sprawdz">Sprawdź dokument</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-intro">
+      <p class="eyebrow">Bezpłatna weryfikacja sygnatur orzeczeń</p>
+      <h1>Zanim pismo trafi do sądu, sprawdź, czy powołane orzeczenia <em>istnieją</em>.</h1>
+      <p class="lede">Modele językowe potrafią powołać orzeczenie, które nigdy nie zapadło — z przekonującą sygnaturą i tezą. Wklej dokument poniżej: wykryjemy wszystkie sygnatury i zweryfikujemy każdą z nich w oficjalnych bazach orzeczeń.</p>
+    </div>
+
+    <div class="checker" id="sprawdz">
+      <div class="checker-head">
+        <span>weryfikacja dokumentu</span>
+        <span class="free">Bezpłatnie · bez rejestracji</span>
+      </div>
+      <div class="checker-body">
+        <label for="doc" class="results-label" style="margin-top:0;">Treść dokumentu</label>
+        <textarea id="doc" spellcheck="false" placeholder="Wklej treść pisma, np.:&#10;&#10;„…zgodnie z ugruntowaną linią orzeczniczą (por. wyrok SN z 12 marca 2020 r., II CSK 234/19; uchwała III CZP 91/23; wyrok NSA z 4 maja 2022 r., II FSK 1442/21)…”"></textarea>
+        <div class="checker-actions">
+          <span class="live-count" id="liveCount" aria-live="polite">Wklej tekst — sygnatury wykrywamy na bieżąco.</span>
+          <button class="btn red" id="checkBtn" type="button">Sprawdź sygnatury</button>
+        </div>
+        <div class="results" id="results" hidden>
+          <p class="results-label" id="resultsLabel">Werdykty</p>
+          <div id="resultsList"></div>
+        </div>
+        <p class="notice" id="notice" hidden></p>
+        <p class="notice" style="border-style:none;padding:10px 0 0;">Dokument jest przetwarzany wyłącznie na potrzeby tej jednej weryfikacji i nie jest przechowywany.</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="alt problem">
+  <div class="wrap">
+    <p class="problem-quote">Zmyślona sygnatura wygląda dokładnie tak samo jak prawdziwa. Różnicę widać dopiero wtedy, gdy ktoś jej poszuka.</p>
+    <p>Pisma procesowe, opinie i analizy coraz częściej powstają z pomocą AI. To oszczędza godziny pracy — ale model, który nie zna właściwego orzeczenia, potrafi je wymyślić. Powołanie nieistniejącego orzeczenia przed sądem to ryzyko dla sprawy, dla klienta i dla reputacji pełnomocnika. Ręczne sprawdzanie każdej sygnatury w trzech różnych portalach zajmuje czas, którego nikt nie ma. Sprawdź Orzeczenie robi to w kilkadziesiąt sekund — i nic za to nie płacisz.</p>
+  </div>
+</section>
+
+<section id="jak-to-dziala">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Jak to działa</h2>
+      <p>Trzy kroki od wklejenia dokumentu do listy werdyktów.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <p class="k">Krok 1 · Dokument</p>
+        <h3>Wklejasz treść pisma</h3>
+        <p>Apelacja, pozew, opinia, analiza — dowolny tekst prawniczy, także wygenerowany przez AI. Dokument służy wyłącznie do jednorazowej weryfikacji i nie jest zapisywany.</p>
+      </div>
+      <div class="step">
+        <p class="k">Krok 2 · Ekstrakcja</p>
+        <h3>Wykrywamy wszystkie sygnatury</h3>
+        <p>Skanujemy tekst i wychwytujemy każdą powołaną sygnaturę akt — również w przypisach, nawiasach i cytatach. Pominięta sygnatura to niesprawdzona halucynacja, dlatego ekstrakcja jest sercem narzędzia.</p>
+      </div>
+      <div class="step">
+        <p class="k">Krok 3 · Werdykt</p>
+        <h3>Weryfikujemy każdą z nich</h3>
+        <p>Każdą sygnaturę sprawdzamy w oficjalnych bazach orzeczeń. Dopasowanie liczy się tylko wtedy, gdy zwrócone orzeczenie faktycznie nosi tę sygnaturę — sam wynik wyszukiwania to za mało.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="werdykty">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Trzy uczciwe werdykty</h2>
+      <p>Nie zgadujemy i nie oskarżamy. Każda sygnatura dostaje jeden z trzech stanów — i zawsze wiesz, na czym on się opiera.</p>
+    </div>
+    <div class="verdicts">
+      <div class="vcard">
+        <span class="stamp ok">Znaleziona</span>
+        <h3>Orzeczenie istnieje</h3>
+        <p>Co najmniej jedno źródło potwierdziło sygnaturę. Wskazujemy, które, i podajemy bezpośredni link do orzeczenia, żebyś mógł zweryfikować także jego treść.</p>
+      </div>
+      <div class="vcard">
+        <span class="stamp no">Nie znaleziono</span>
+        <h3>Silny sygnał halucynacji</h3>
+        <p>Wszystkie źródła odpowiedziały i żadne nie zna tej sygnatury. To najmocniejsza przesłanka, że orzeczenie zostało zmyślone — i że wymaga Twojej interwencji przed wysyłką pisma.</p>
+      </div>
+      <div class="vcard">
+        <span class="stamp meh">Nierozstrzygnięta</span>
+        <h3>Brak pewności — mówimy wprost</h3>
+        <p>Żadne źródło nie potwierdziło sygnatury, ale któreś nie odpowiedziało poprawnie. Brak odpowiedzi to nie brak orzeczenia, więc nie wydajemy wyroku na wyrost. Sprawdź tę sygnaturę ręcznie.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="zrodla">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Oficjalne źródła, nie zgadywanie</h2>
+      <p>Pytamy wyłącznie autorytatywne rejestry orzeczeń. Sygnatura „istnieje” tylko wtedy, gdy któryś z nich zwróci orzeczenie o dokładnie tej sygnaturze.</p>
+    </div>
+    <div class="sources">
+      <div class="source">
+        <h3>Sądy powszechne</h3>
+        <span class="mono">orzeczenia.ms.gov.pl</span>
+        <p style="font-size:.92rem;color:var(--ink-soft);margin-top:10px;">Portal orzeczeń sądów rejonowych, okręgowych i apelacyjnych.</p>
+      </div>
+      <div class="source">
+        <h3>Sąd Najwyższy</h3>
+        <span class="mono">sn.pl</span>
+        <p style="font-size:.92rem;color:var(--ink-soft);margin-top:10px;">Baza orzeczeń SN — wyroki, postanowienia i uchwały.</p>
+      </div>
+      <div class="source">
+        <h3>Sądy administracyjne</h3>
+        <span class="mono">orzeczenia.nsa.gov.pl</span>
+        <p style="font-size:.92rem;color:var(--ink-soft);margin-top:10px;">Centralna Baza Orzeczeń Sądów Administracyjnych (NSA i WSA).</p>
+      </div>
+    </div>
+    <div class="privacy">
+      <span class="mark" aria-hidden="true">§</span>
+      <p><strong>Poufność dokumentu.</strong> Treść pisma jest przetwarzana wyłącznie na potrzeby jednej weryfikacji i usuwana po jej zakończeniu. Nie budujemy na Twoich dokumentach żadnej bazy ani zbioru treningowego.</p>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2>Jedna zmyślona sygnatura może kosztować więcej niż cała sprawa.</h2>
+    <p>Sprawdzaj każde pismo generowane z pomocą AI, zanim podpiszesz je własnym nazwiskiem. Bezpłatnie, bez rejestracji.</p>
+    <a class="btn red" href="#sprawdz">Sprawdź swój dokument</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-inner">
+    <span><span class="mono" style="font-weight:600;">§ Sprawdź Orzeczenie</span> — weryfikacja sygnatur orzeczeń</span>
+    <span>kontakt@sprawdzorzeczenie.pl</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* === Konfiguracja backendu ===
+     Endpoint weryfikacji. Kontrakt:
+     POST { document: string }
+     → 200 { verdicts: [ { signature: string,
+                           verdict: "found" | "not_found" | "inconclusive",
+                           sources: [ { name: string,
+                                        outcome: "matched" | "confirmed_absent" | "errored",
+                                        url?: string } ] } ] }
+     Backend sam wykonuje ekstrakcję (ekstrakcja po stronie klienta służy
+     wyłącznie licznikowi na żywo). */
+  var API_URL = "/api/check";
+
+  /* Ekstrakcja sygnatur (podgląd na żywo).
+     Wzorzec celowo szeroki — pominięta sygnatura jest gorsza niż fałszywy alarm.
+     Obejmuje m.in.: II CSK 234/19, III CZP 91/23, I ACa 1042/20,
+     II FSK 1442/21, II SA/Wa 123/20, IV P 88/2021, KIO 1204/24. */
+  var SIG_RE = /\b(?:(?:[IVXLC]{1,7}|KIO|BSA)\s+)?[A-ZŁŚŻ][A-Za-złśżó]{0,5}(?:\s?\/\s?[A-Za-złó]{1,3})?\s+\d{1,6}\s?\/\s?\d{2}(?:\d{2})?\b/g;
+  var ROMAN_RE = /^[IVXLC]{1,7}\s/;
+  var STOP_WORDS = /^(?:z|w|nr|Nr|poz|Dz|art|ust|pkt|str|s|t|sygn|Sygn)\b/;
+
+  function extract(text){
+    var out = [], seen = {}, m;
+    SIG_RE.lastIndex = 0;
+    while((m = SIG_RE.exec(text)) !== null){
+      var sig = m[0].replace(/\s+/g," ").replace(/\s?\/\s?/g,"/").trim();
+      /* odrzuć oczywiste nie-sygnatury: numery ustaw, pozycje dzienników itp. */
+      if(STOP_WORDS.test(sig)) continue;
+      /* wymagaj rzymskiej liczby, KIO/BSA albo repertorium pisanego wielkimi literami */
+      var body = sig.replace(ROMAN_RE,"");
+      if(!ROMAN_RE.test(sig) && !/^(?:KIO|BSA)\b/.test(sig) && !/^[A-ZŁŚŻ]{1,5}(?:\/[A-Za-z]{1,3})?\s\d/.test(body)) continue;
+      if(!seen[sig]){ seen[sig] = true; out.push(sig); }
+    }
+    return out;
+  }
+
+  var doc = document.getElementById("doc");
+  var liveCount = document.getElementById("liveCount");
+  var btn = document.getElementById("checkBtn");
+  var results = document.getElementById("results");
+  var resultsList = document.getElementById("resultsList");
+  var resultsLabel = document.getElementById("resultsLabel");
+  var notice = document.getElementById("notice");
+
+  function plural(n){
+    if(n === 1) return "sygnaturę";
+    var d = n % 10, h = n % 100;
+    if(d >= 2 && d <= 4 && (h < 12 || h > 14)) return "sygnatury";
+    return "sygnatur";
+  }
+
+  doc.addEventListener("input", function(){
+    var sigs = extract(doc.value);
+    liveCount.innerHTML = sigs.length
+      ? "Wykryto <strong>" + sigs.length + "</strong> " + plural(sigs.length) + "."
+      : (doc.value.trim() ? "Nie wykryto jeszcze żadnej sygnatury." : "Wklej tekst — sygnatury wykrywamy na bieżąco.");
+  });
+
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  var VERDICTS = {
+    found:        { cls:"ok",  label:"Znaleziona" },
+    not_found:    { cls:"no",  label:"Nie znaleziono" },
+    inconclusive: { cls:"meh", label:"Nierozstrzygnięta" }
+  };
+
+  function sourceLine(v){
+    if(v.verdict === "found"){
+      var hits = (v.sources || []).filter(function(s){ return s.outcome === "matched"; });
+      return hits.map(function(s){
+        return s.url
+          ? '<a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.name) + " — link do orzeczenia</a>"
+          : esc(s.name);
+      }).join(" · ") || "Źródło potwierdziło sygnaturę";
+    }
+    if(v.verdict === "not_found") return "Brak we wszystkich źródłach — możliwa halucynacja";
+    var errs = (v.sources || []).filter(function(s){ return s.outcome === "errored"; })
+                                .map(function(s){ return esc(s.name); });
+    return (errs.length ? errs.join(", ") + " nie odpowiedział(y) — " : "") + "wynik niepewny, sprawdź ręcznie";
+  }
+
+  function renderRow(v, i){
+    var vv = VERDICTS[v.verdict] || VERDICTS.inconclusive;
+    return '<div class="verdict-row">'
+      + '<div class="sig-cell">' + esc(v.signature)
+      + '<span class="src">' + sourceLine(v) + "</span></div>"
+      + '<span class="stamp pop ' + vv.cls + '" style="animation-delay:' + (i * 0.28) + 's">' + vv.label + "</span>"
+      + "</div>";
+  }
+
+  function renderPending(sigs){
+    resultsLabel.textContent = "Weryfikacja w toku";
+    resultsList.innerHTML = sigs.map(function(sig){
+      return '<div class="verdict-row">'
+        + '<div class="sig-cell">' + esc(sig)
+        + '<span class="src">Odpytujemy źródła…</span></div>'
+        + '<span class="stamp wait">Sprawdzanie</span>'
+        + "</div>";
+    }).join("");
+    results.hidden = false;
+  }
+
+  function showNotice(msg, isErr){
+    notice.textContent = msg;
+    notice.classList.toggle("err", !!isErr);
+    notice.hidden = false;
+  }
+
+  btn.addEventListener("click", function(){
+    notice.hidden = true;
+    var text = doc.value.trim();
+    if(!text){
+      showNotice("Wklej najpierw treść dokumentu.", true);
+      doc.focus();
+      return;
+    }
+    var sigs = extract(text);
+    if(!sigs.length){
+      results.hidden = true;
+      showNotice("Nie wykryliśmy żadnej sygnatury w tym tekście. Jeśli dokument powołuje orzeczenia, a mimo to nic nie znaleźliśmy — napisz do nas: kontakt@sprawdzorzeczenie.pl. Pominięta sygnatura to dla nas najpoważniejszy błąd.");
+      return;
+    }
+
+    renderPending(sigs);
+    btn.disabled = true;
+    btn.textContent = "Weryfikuję…";
+
+    fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ document: text })
+    })
+    .then(function(r){
+      if(!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
+    .then(function(data){
+      var verdicts = (data && data.verdicts) || [];
+      if(!verdicts.length) throw new Error("empty");
+      resultsLabel.textContent = "Werdykty — " + verdicts.length + " " + plural(verdicts.length);
+      resultsList.innerHTML = verdicts.map(renderRow).join("");
+    })
+    .catch(function(){
+      /* Backend niedostępny: uczciwie pokazujemy stan „nierozstrzygnięta”
+         dla każdej wykrytej sygnatury — brak odpowiedzi to nie brak orzeczenia. */
+      resultsLabel.textContent = "Werdykty — " + sigs.length + " " + plural(sigs.length);
+      resultsList.innerHTML = sigs.map(function(sig, i){
+        return renderRow({ signature: sig, verdict: "inconclusive", sources: [] }, i);
+      }).join("");
+      showNotice("Nie udało się połączyć z serwerem weryfikacji. Wykryte sygnatury oznaczyliśmy jako nierozstrzygnięte — spróbuj ponownie za chwilę.", true);
+    })
+    .finally(function(){
+      btn.disabled = false;
+      btn.textContent = "Sprawdź sygnatury";
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

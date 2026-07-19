@@ -1,0 +1,827 @@
+
+
+<!DOCTYPE HTML>
+<html dir="ltr" lang="pl-PL">
+    <head><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes" /><meta http-equiv="content-type" content="text/html;charset=utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge" />	    
+		
+        <!-- ===== STARTER: Robots  ======================================================================================================= -->
+        
+		
+		<!-- ===== STARTER: Favicon / Windows Tile ======================================================================================== -->	  
+        <!-- workaround for missing SPUrl token for foundation -->
+        <link rel='shortcut icon' href='https://www.sn.pl/_catalogs/masterpage/SN/images/fav.ico?r=07032015'/>              
+		<!-- ===== STARTER: Page Title loaded from page or page layout ==================================================================== -->
+		<!--<title>
+	
+	Wyszukiwanie - orzeczenia
+
+</title> -->
+		 <title>
+	Baza orzeczeń
+</title>
+		<!-- ===== STARTER: SP Scripts and CSS  =========================================================================================== -->
+		
+		
+		
+		
+		<!-- ===== STARTER: Additional header placeholder - overridden by asp:content on pages or page layouts  =========================== -->
+		
+	<meta name="CollaborationServer" content="SharePoint Team Web Site" />
+	<script type="text/javascript">// <![CDATA[ 
+
+
+	var navBarHelpOverrideKey = "WSSEndUser";
+	// ]]>
+</script>
+	
+	
+		<!-- ===== STARTER: Core SharePoint CSS =========================================================================================== -->
+		<!-- ===== STARTER: Custom CSS  =================================================================================================== -->
+		<!-- workaround for missing SPUrl token for foundation -->
+		<link rel='stylesheet' type='text/css' href='https://www.sn.pl/_catalogs/masterpage/SN/normalize.css?r=07032015'/><link rel='stylesheet' type='text/css' href='https://www.sn.pl/_catalogs/masterpage/SN/sn.css?r=07032015'/><link rel='stylesheet' type='text/css' href='https://www.sn.pl/_catalogs/masterpage/SN/main.css?r=07032015'/><link rel='stylesheet' type='text/css' href='https://www.sn.pl/_catalogs/masterpage/SN/jquery-ui/jquery-ui.min.css?r=30082015'/>
+		
+		<!-- lightbox i kawalem menu bocznego-->
+        <link href="/_catalogs/masterpage/SN/lightbox/jquery.lightbox.min.css" rel="stylesheet" type="text/css" media="screen" />
+
+		 <script type="text/javascript" src="/_catalogs/masterpage/SN/js/jquery-1.11.2.min.js?r=07032015"></script>
+		 <script type="text/javascript" src="/_catalogs/masterpage/SN/js/main.js?r=07032015"></script>
+		 <!--<script type="text/javascript" src="/_catalogs/masterpage/SN/lightbox/lightBoxInsert.js?r=07032015"></script>-->
+		 <script type="text/javascript" src="/_catalogs/masterpage/SN/lightbox/jquery.lightbox.min.js?r=07032015"></script>
+		 <script type="text/javascript" src="/_catalogs/masterpage/SN/lightbox/webInser.js?r=07032015"></script>
+		
+<script type="text/javascript">
+    function focusToStart () {
+        document.getElementById("mainSite").focus();
+    }
+</script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $("a[title$='Go to the next month']").prop('title', '').append("<span aria-hidden='true'>&gt;</span><span class='wcag-hidden'>następny miesiąc</span>");});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $("a[title$='Go to the previous month']").prop('title', '').append("<span aria-hidden='true'>&lt;</span><span class='wcag-hidden'>poprzedni miesiąc</span>");});
+</script>
+<style type="text/css">
+.breadcrumb li {
+    display: inline;
+}
+.breadcrumb li+li:before {
+    content:" » ";
+}
+</style>
+                
+		<link rel="stylesheet" type="text/css" href="/_catalogs/masterpage/SN/zagadnienia-prawne.css"/>
+</head>
+		<body>
+		<ul class="skip-links list-unstyled" style="position:absolute;">
+		  <li><a href="#main-navigation">Przejdź do menu głównego</a></li>
+		  <li><a href="#side-navigation">Przejdź do nawigacji podwitryny</a></li>
+		  <li><a href="#contentBox">Przejdź do treści</a></li>
+		  <li><a href="#footer">Przejdź do stopki witryny</a></li>
+		  <li><a href="/informacjepraktyczne/SitePages/Mapa_serwisu.aspx">Mapa serwisu</a></li>
+		</ul>
+		<div id="mobile-panel" class="loading">
+			<div class="mobile-panel--content">
+				<ul class="mobile-navigation main-mobile-navigation">
+					<li class="mobile-navigation--element mobile-navigation--parent-element">
+						<a href="#">O Sądzie Najwyższym</a>
+						<ul class="mobile-navigation mobile-navigation--secondary">
+							<li class="mobile-navigation--element">
+								<a href="/osadzienajwyzszym/SitePages/Status_prawny.aspx">Status prawny</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/osadzienajwyzszym/SitePages/Organizacja.aspx">Organizacja</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/osadzienajwyzszym/SitePages/Siedziba.aspx">Siedziba</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/osadzienajwyzszym/SitePages/Historia.aspx">Historia</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/osadzienajwyzszym/SitePages/Sprawozdania_z_dzialalnosci.aspx">Sprawozdania z działalności</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/osadzienajwyzszym/SitePages/Wystapienia_Pierwszego_Prezesa_SN.aspx">Wystąpienia Pierwszego Prezesa Sądu Najwyższego </a>
+							</li>
+
+							<li class="mobile-navigation--element">
+								<a href="/osadzienajwyzszym/SitePages/Budzet_i_kontrola.aspx">Budżet i kontrola wykonania</a>
+							</li>
+						</ul>
+					</li>
+					<li class="mobile-navigation--element mobile-navigation--parent-element">
+						<a href="#">Aktualności</a>
+						<ul class="mobile-navigation mobile-navigation--secondary">
+							<li class="mobile-navigation--element">
+								<a href="/aktualnosci/SitePages/Komunikaty_o_sprawach.aspx">Komunikaty o sprawach</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/aktualnosci/SitePages/e-Wokanda_i_wykaz_posiedzen.aspx">e-Wokanda i wykaz posiedzeń</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/aktualnosci/SitePages/Wydarzenia.aspx">Wydarzenia</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/aktualnosci/SitePages/Kalendarium.aspx">Kalendarium</a>
+							</li>
+						</ul>
+					</li>
+					<li class="mobile-navigation--element mobile-navigation--parent-element">
+						<a href="#">Sprawy</a>
+						<ul class="mobile-navigation mobile-navigation--secondary">
+							<li class="mobile-navigation--element">
+								<a href="/sprawy/SitePages/Zagadnienia_prawne_SN.aspx">Zagadnienia prawne</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/sprawy/SitePages/wykazpytan.aspx">Wykaz pytań prawnych do TK oraz pytań prejudycjalnych do TSUE skierowanych przez SN</a>
+							</li>
+
+							<li class="mobile-navigation--element">
+								<a href="/sprawy/SitePages/e-Sprawa_nowa2.aspx">e-Sprawa</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/sprawy/SitePages/e-Wokanda.aspx">e-Wokanda</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/sprawy/SitePages/Czytelnia_akt.aspx">Czytelnia akt</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/sprawy/SitePages/Prowadzone_rejestry.aspx">Prowadzone rejestry</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/sprawy/SitePages/Statystyki_ruchu_spraw.aspx">Statystyki ruchu spraw</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/osadzienajwyzszym/SitePages/Sprawozdania_z_dzialalnosci.aspx">Informacja o sprawach w sprawozdaniach z działalności SN</a>
+							</li>
+						</ul>
+					</li>
+					<li class="mobile-navigation--element mobile-navigation--parent-element">
+						<a href="#">Orzecznictwo</a>
+						<ul class="mobile-navigation mobile-navigation--secondary">
+							<li class="mobile-navigation--element">
+								<a href="/orzecznictwo/SitePages/Najnowsze_orzeczenia.aspx">Najnowsze orzeczenia</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/orzecznictwo/SitePages/Baza_orzeczen_old.aspx">Baza orzeczeń </a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/orzecznictwo/SitePages/Urzedowe_zbiory_orzeczen.aspx">Urzędowe zbiory orzeczeń</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/orzecznictwo/SitePages/Biuletyny.aspx">Biuletyny</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/osadzienajwyzszym/SitePages/Sprawozdania_z_dzialalnosci.aspx">Informacja o orzecznictwie w sprawozdaniach z działalności SN</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/orzecznictwo/SitePages/Inne_publikacje_orzeczen.aspx">Inne publikacje orzeczeń</a>
+							</li>
+						</ul>
+					</li>
+					<li class="mobile-navigation--element mobile-navigation--parent-element">
+						<a href="#">Publikacje</a>
+						<ul class="mobile-navigation mobile-navigation--secondary">
+							<li class="mobile-navigation--element">
+								<a href="/orzecznictwo/SitePages/Urzedowe_zbiory_orzeczen2.aspx">Urzędowe zbiory orzeczeń</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/orzecznictwo/SitePages/Biuletyny.aspx">Biuletyny</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/publikacje/SitePages/BSiA_Materialy_naukowe2.aspx">Studia i Analizy Sądu Najwyższego. Materiały naukowe.</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/publikacje/SitePages/BSiA_Przeglad_orzecznictwa.aspx">Studia i Analizy Sądu Najwyższego. Przegląd orzecznictwa.</a>
+							</li>
+
+						</ul>
+					</li>
+					<li class="mobile-navigation--element mobile-navigation--parent-element">
+						<a href="#">Informacje</a>
+						<ul class="mobile-navigation mobile-navigation--secondary">
+												
+						<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Ochrona_danych_osobowych.aspx">Ochrona danych osobowych w Sądzie Najwyższym</a>
+							</li>
+
+						<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Monitoring_wizyjny.aspx">Monitoring wizyjny</a>
+							</li>
+
+						<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Punkt_obslugi_interesantow.aspx">Punkt Obsługi Interesantów</a>
+							</li>
+
+						<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/patronat.aspx">Patronaty</a>
+							</li>
+
+						<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Skargi_i_wnioski.aspx">Przyjmowanie skarg i wniosków</a>
+							</li>
+							
+							
+							
+							<li class="mobile-navigation--element">
+								<a href="/sprawy/SitePages/Czytelnia_akt.aspx">Czytelnia akt</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Adres_i_mapa_dojazdu.aspx">Adres i mapa dojazdu</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Godziny_urzedowania.aspx">Godziny urzędowania</a>
+							</li>
+
+						
+							<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Dane_teleadresowe.aspx">Dane teleadresowe</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Elektroniczna_skrzynka_podawcza.aspx">Elektroniczna skrzynka podawcza</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Informacje_finansowo_ewidencyjne.aspx">Numery kont i numery ewidencyjne</a>
+							</li>
+							
+							<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Oswiadczenia_SSN_ws_SN.aspx">Oświadczenia sędziów Sądu Najwyższego</a>
+							</li>
+							
+							
+							
+							<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Oswiadczenia_majatkowe_old.aspx">Oświadczenia majątkowe sędziów Sądu Najwyższego i inne</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Informacje_dla_mediow.aspx">Informacje dla mediów</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Udostepnianie_informacji_publicznej.aspx">Udostępnianie informacji publicznej </a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Ponowne_wykorzystywanie_informacji_publicznych.aspx">Ponowne wykorzystywanie informacji publicznych</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Zamowienia_publiczne.aspx">Zamówienia publiczne</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Centralny_rejestr_umow_SN.aspx">Rejestr umów Sądu Najwyższego</a>
+							</li>
+
+							<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Ogloszenia.aspx">Ogłoszenia</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Oferty_pracy.aspx">Oferty pracy</a>
+							</li>
+					
+							<!--<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Nabor_kandydatow_na_wolne_stanowiska.aspx">Nabór na wolne stanowiska</a>
+							</li>-->
+							<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Prawa_czlowieka.aspx">Prawa człowieka</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Unia_Europejska.aspx">Unia Europejska</a>
+							</li>
+							<li class="mobile-navigation--element">
+								<a href="/informacjepraktyczne/SitePages/Redakcja_BIP.aspx">Redakcja stron podmiotowych Biuletynu Informacji Publicznej</a>
+							</li>							
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<!-- ===== STARTER: SP IDs / Prefetch SP images / SP Form  =========================================================================== -->
+		
+		
+		<form method="post" action="./orzeczenia.aspx?Sygnatura=II+CSK+9999%2f47" onsubmit="javascript:return WebForm_OnSubmit();" id="aspnetForm">
+<div class="aspNetHidden">
+<input type="hidden" name="MSOWebPartPage_PostbackSource" id="MSOWebPartPage_PostbackSource" value="" />
+<input type="hidden" name="MSOTlPn_SelectedWpId" id="MSOTlPn_SelectedWpId" value="" />
+<input type="hidden" name="MSOTlPn_View" id="MSOTlPn_View" value="0" />
+<input type="hidden" name="MSOTlPn_ShowSettings" id="MSOTlPn_ShowSettings" value="False" />
+<input type="hidden" name="MSOGallery_SelectedLibrary" id="MSOGallery_SelectedLibrary" value="" />
+<input type="hidden" name="MSOGallery_FilterString" id="MSOGallery_FilterString" value="" />
+<input type="hidden" name="MSOTlPn_Button" id="MSOTlPn_Button" value="none" />
+<input type="hidden" name="_wikiPageMode" id="_wikiPageMode" value="" />
+<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
+<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
+<input type="hidden" name="__REQUESTDIGEST" id="__REQUESTDIGEST" value="0x2AA1C7015D64FF7934EFEBF3C9A1535C81B0513B13EB7F0192139663AAA4AE3140F6D4AD882A461625F6C2F7F6463E9E64A38E5ABD1F00CA8CD69AF4B24623EA,18 Jul 2026 10:43:45 -0000" />
+<input type="hidden" name="_wikiPageCommand" id="_wikiPageCommand" value="" />
+<input type="hidden" name="SPPageStateContext_PreviousAuthoringVersion" id="SPPageStateContext_PreviousAuthoringVersion" value="41" />
+<input type="hidden" name="MSOSPWebPartManager_DisplayModeName" id="MSOSPWebPartManager_DisplayModeName" value="Browse" />
+<input type="hidden" name="MSOSPWebPartManager_ExitingDesignMode" id="MSOSPWebPartManager_ExitingDesignMode" value="false" />
+<input type="hidden" name="MSOWebPartPage_Shared" id="MSOWebPartPage_Shared" value="" />
+<input type="hidden" name="MSOLayout_LayoutChanges" id="MSOLayout_LayoutChanges" value="" />
+<input type="hidden" name="MSOLayout_InDesignMode" id="MSOLayout_InDesignMode" value="" />
+<input type="hidden" name="_wpSelected" id="_wpSelected" value="" />
+<input type="hidden" name="_wzSelected" id="_wzSelected" value="" />
+<input type="hidden" name="MSOSPWebPartManager_OldDisplayModeName" id="MSOSPWebPartManager_OldDisplayModeName" value="Browse" />
+<input type="hidden" name="MSOSPWebPartManager_StartWebPartEditingName" id="MSOSPWebPartManager_StartWebPartEditingName" value="false" />
+<input type="hidden" name="MSOSPWebPartManager_EndWebPartEditing" id="MSOSPWebPartManager_EndWebPartEditing" value="false" />
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUBMA9kFgRmD2QWAgIBD2QWBAIFD2QWBAICD2QWBgUmZ18zYzZjMGI3N185MGJlXzQ5OWVfOWVmMl9hMTdkMzZiYTI1ZmMPZBYCZg9kFhICAQ8WAh4EVGV4dAUOQmF6YSBvcnplY3plxYRkAgMPFgIfAAVQPGRpdiBjbGFzcz0ic2tpcG5hdiI+PGEgaHJlZj0iI2xpc3QiPlByemVqZMW6IGRvIHd5bmlrw7N3IHd5c3p1a2l3YW5pYTwvYT48L2Rpdj5kAgUPDxYCHgdWaXNpYmxlaGQWCAIBDxYCHwAFIkxpY3piYSBkb2t1bWVudMOzdyB3IGJhemllOiAyMDI2MDdkAg0PEGRkFgBkAh8PEGRkFgBkAjcPEGRkFgBkAgcPDxYCHwFnZBYCAgEPFgIeC18hSXRlbUNvdW50AgEWAgIBD2QWBAIBDxYCHwAFIjxkdCBjbGFzcz0iTGFiZWwiPlN5Z25hdHVyYTo8L2R0PiBkAgIPFgIfAAUlPGRkIGNsYXNzPSJWYWx1ZSI+SUkgQ1NLIDk5OTkvNDc8L2RkPmQCCQ8PFgIfAWdkFgICAQ8WAh8ABT5OaWUgem5hbGV6aW9ubyBvcnplY3plxYQgc3BlxYJuaWFqxIVjeWNoIGtyeXRlcmlhIHd5c3p1a2l3YW5pYWQCCw8PFgIfAWhkZAINDw8WAh8BaGRkAg8PPCsAEQIADxYEHgtfIURhdGFCb3VuZGcfAmZkDBQrAAgWCB4ETmFtZQUEUmFuax4KSXNSZWFkT25seWgeBFR5cGUZKVpTeXN0ZW0uRG91YmxlLCBtc2NvcmxpYiwgVmVyc2lvbj00LjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkeCURhdGFGaWVsZAUEUmFuaxYIHwQFBURvY0lkHwVoHwYZKVlTeXN0ZW0uSW50NjQsIG1zY29ybGliLCBWZXJzaW9uPTQuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49Yjc3YTVjNTYxOTM0ZTA4OR8HBQVEb2NJZBYIHwQFE0RvY3VtZW50U3VtbWFyeVNpemUfBWgfBhkrBR8HBRNEb2N1bWVudFN1bW1hcnlTaXplFggfBAULUGFydGl0aW9uSWQfBWgfBhkpWFN5c3RlbS5HdWlkLCBtc2NvcmxpYiwgVmVyc2lvbj00LjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkfBwULUGFydGl0aW9uSWQWCB8EBQdVcmxab25lHwVoHwYZKwEfBwUHVXJsWm9uZRYIHwQFG0FBTUVuYWJsZWRNYW5hZ2VkUHJvcGVydGllcx8FaB8GGSsCHwcFG0FBTUVuYWJsZWRNYW5hZ2VkUHJvcGVydGllcxYIHwQFDFJlc3VsdFR5cGVJZB8FaB8GGSsBHwcFDFJlc3VsdFR5cGVJZBYIHwQFEFJlbmRlclRlbXBsYXRlSWQfBWgfBhkrAh8HBRBSZW5kZXJUZW1wbGF0ZUlkZAIRDw8WAh8ABbMBRmluYWwgcXVlcnk6IEZpbGVUeXBlOnBkZiBPcnplY3plbmlhU3lnbmF0dXJhOiJJSSBDU0sgOTk5OS80NyIgIC1Db250ZW50Q2xhc3M9dXJuOmNvbnRlbnQtY2xhc3M6U1BTUGVvcGxlPGJyPjxicj5DdXJyZW50Q3VsdHVyZSBpcyBwbC1QTC48YnI+PGJyPkN1cnJlbnRVSUN1bHR1cmUgaXMgcGwtUEwuPGJyPjxicj5kZAUmZ182YmQ5OWE5Yl82M2MxXzRlNjFfYjAxMl9lMGIzZTJiMzIwMWQPZBYEZg8WAh8BaGQCAQ8WAh8BaGQFJmdfNzZmOWY2YjFfZGI4OF80YTkyXzg4OWRfMDEwOTk0NjFhY2NhD2QWBGYPFgIfAWhkAgEPFgIfAWhkAhAPZBYEAgMPZBYCAgEPDxYCHglNYXhMZW5ndGgCe2RkAgcPFgIeE1ByZXZpb3VzQ29udHJvbE1vZGULKYgBTWljcm9zb2Z0LlNoYXJlUG9pbnQuV2ViQ29udHJvbHMuU1BDb250cm9sTW9kZSwgTWljcm9zb2Z0LlNoYXJlUG9pbnQsIFZlcnNpb249MTUuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49NzFlOWJjZTExMWU5NDI5YwEWAmYPFgIfCQsrBwFkAhsPZBYEAhEPZBYCAgEPZBYCZg9kFgQCAQ8PFgIeC05hdmlnYXRlVXJsBVovd3lzenVraXdhbmllL19sYXlvdXRzLzE1L1JlY2VudFdpa2lQYWdlcy5hc3B4P0xpc3Q9e0JGMEFGQjg3LTdBOTItNDQ0Qi1BQzZGLUM5NUNBRTk1RkI5NX1kZAIDD2QWCGYPZBYCAgEPDxYEHwoFKS93eXN6dWtpd2FuaWUvU2l0ZVBhZ2VzL1d5c3p1a2l3YW5pZS5hc3B4HwAFWzxzcGFuIGNsYXNzPSJhZGRpdGlvbmFsLWJhY2tncm91bmQiPjxzcGFuIGNsYXNzPSJtZW51LWl0ZW0tdGV4dCI+V3lzenVraXdhbmllPC9zcGFuPjwvc3Bhbj5kZAIBD2QWAgIBDw8WBB8KBSUvd3lzenVraXdhbmllL1NpdGVQYWdlcy9lLXNwcmF3YS5hc3B4HwAFVzxzcGFuIGNsYXNzPSJhZGRpdGlvbmFsLWJhY2tncm91bmQiPjxzcGFuIGNsYXNzPSJtZW51LWl0ZW0tdGV4dCI+ZS1zcHJhd2E8L3NwYW4+PC9zcGFuPmRkAgIPZBYCAgEPDxYEHwoFJy93eXN6dWtpd2FuaWUvU2l0ZVBhZ2VzL29yemVjemVuaWEuYXNweB8ABVk8c3BhbiBjbGFzcz0iYWRkaXRpb25hbC1iYWNrZ3JvdW5kIj48c3BhbiBjbGFzcz0ibWVudS1pdGVtLXRleHQiPm9yemVjemVuaWE8L3NwYW4+PC9zcGFuPmRkAgMPZBYCAgEPDxYEHwoFIi93eXN6dWtpd2FuaWUvU2l0ZVBhZ2VzL3Rlc3QyLmFzcHgfAAVUPHNwYW4gY2xhc3M9ImFkZGl0aW9uYWwtYmFja2dyb3VuZCI+PHNwYW4gY2xhc3M9Im1lbnUtaXRlbS10ZXh0Ij50ZXN0Mjwvc3Bhbj48L3NwYW4+ZGQCLQ9kFgICAQ8WAh8BaBYCZg9kFgICAQ9kFgJmD2QWAgIBDw8WDh4ISW1hZ2VVcmwFIC9fbGF5b3V0cy8xNS9pbWFnZXMvZWRpdGl0ZW0uZ2lmHglBY2Nlc3NLZXkFAUkeEVBlcm1pc3Npb25Db250ZXh0CymKAU1pY3Jvc29mdC5TaGFyZVBvaW50LlV0aWxpdGllcy5QZXJtaXNzaW9uQ29udGV4dCwgTWljcm9zb2Z0LlNoYXJlUG9pbnQsIFZlcnNpb249MTUuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49NzFlOWJjZTExMWU5NDI5YwIeC1Blcm1pc3Npb25zKCmAAU1pY3Jvc29mdC5TaGFyZVBvaW50LlNQQmFzZVBlcm1pc3Npb25zLCBNaWNyb3NvZnQuU2hhcmVQb2ludCwgVmVyc2lvbj0xNS4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj03MWU5YmNlMTExZTk0MjljDUVkaXRMaXN0SXRlbXMeDU9uQ2xpZW50Q2xpY2sFrgJqYXZhc2NyaXB0OlNUU05hdmlnYXRlV2l0aENoZWNrb3V0QWxlcnQoJ1x1MDAyZnd5c3p1a2l3YW5pZVx1MDAyZl9sYXlvdXRzXHUwMDJmMTVcdTAwMmZsaXN0Zm9ybS5hc3B4P0xpc3RJZD17QkYwQUZCODctN0E5Mi00NDRCLUFDNkYtQzk1Q0FFOTVGQjk1fVx1MDAyNlBhZ2VUeXBlPTZcdTAwMjZJRD03JywnMCcsJzAnLCdcdTAwMmZ3eXN6dWtpd2FuaWVcdTAwMmZTaXRlUGFnZXNcdTAwMmZvcnplY3plbmlhLmFzcHgnLCdodHRwczpcdTAwMmZcdTAwMmZ3d3cuc24ucGxcdTAwMmZ3eXN6dWtpd2FuaWUnKTsgcmV0dXJuIGZhbHNlOx4oQ2xpZW50T25DbGlja1NjcmlwdENvbnRhaW5pbmdQcmVmaXhlZFVybGQfCgWgAmphdmFzY3JpcHQ6U1RTTmF2aWdhdGVXaXRoQ2hlY2tvdXRBbGVydCgnXHUwMDJmd3lzenVraXdhbmllXHUwMDJmX2xheW91dHNcdTAwMmYxNVx1MDAyZmxpc3Rmb3JtLmFzcHg/TGlzdElkPXtCRjBBRkI4Ny03QTkyLTQ0NEItQUM2Ri1DOTVDQUU5NUZCOTV9XHUwMDI2UGFnZVR5cGU9Nlx1MDAyNklEPTcnLCcwJywnMCcsJ1x1MDAyZnd5c3p1a2l3YW5pZVx1MDAyZlNpdGVQYWdlc1x1MDAyZm9yemVjemVuaWEuYXNweCcsJ2h0dHBzOlx1MDAyZlx1MDAyZnd3dy5zbi5wbFx1MDAyZnd5c3p1a2l3YW5pZScpO2RkAgEPFgIfAWhkGAIFQmN0bDAwJGN0bDI3JGdfM2M2YzBiNzdfOTBiZV80OTllXzllZjJfYTE3ZDM2YmEyNWZjJGN0bDAwJEdyaWRWaWV3MQ88KwAMAQhmZAUtY3RsMDAkUGxhY2VIb2xkZXJMZWZ0TmF2QmFyJFY0UXVpY2tMYXVuY2hNZW51Dw9kBRFTenVrYWogb3J6ZWN6ZW5pYWQop4wGEwkEK+IKaQTaXVhfSe+8wP1oR+hq7ctfYzDL8g==" />
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+var theForm = document.forms['aspnetForm'];
+if (!theForm) {
+    theForm = document.aspnetForm;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+//]]>
+</script>
+
+
+<script src="/WebResource.axd?d=3BvqOJ6uWhr9_Ec2_xAhRSGWodHZ84Y0GSV_9XBzViROROB95IK0A9WrPQjkO_OOlXK_E2cFKi1YvQX5QgI3nSsJydZ-6HizhLnpBvSPrTU1&amp;t=637814689746327080" type="text/javascript"></script>
+
+
+<script type="text/javascript">
+//<![CDATA[
+var MSOWebPartPageFormName = 'aspnetForm';
+var g_presenceEnabled = true;
+var g_wsaEnabled = false;
+var g_wsaQoSEnabled = false;
+var g_wsaQoSDataPoints = [];
+var g_wsaLCID = 1045;
+var g_wsaListTemplateId = 119;
+var g_wsaSiteTemplateId = 'STS#0';
+var _fV4UI=true;var _spPageContextInfo = {webServerRelativeUrl: "\u002fwyszukiwanie", webAbsoluteUrl: "https:\u002f\u002fwww.sn.pl\u002fwyszukiwanie", siteAbsoluteUrl: "https:\u002f\u002fwww.sn.pl", serverRequestPath: "\u002fwyszukiwanie\u002fSitePages\u002forzeczenia.aspx", layoutsUrl: "_layouts\u002f15", webTitle: "Wyszukiwanie", webTemplate: "1", tenantAppVersion: "0", isAppWeb: false, Has2019Era: true, webLogoUrl: "_layouts\u002f15\u002fimages\u002fsiteicon.png", webLanguage: 1045, currentLanguage: 1045, currentUICultureName: "pl-PL", currentCultureName: "pl-PL", clientServerTimeDelta: new Date("2026-07-18T10:43:45.6067378Z") - new Date(), siteClientTag: "1579$$15.0.5485.1000", crossDomainPhotosEnabled:false, webUIVersion:15, webPermMasks:{High:16,Low:200769},pageListId:"{bf0afb87-7a92-444b-ac6f-c95cae95fb95}",pageItemId:7, pagePersonalizationScope:1, alertsEnabled:false, siteServerRelativeUrl: "\u002f", allowSilverlightPrompt:'True'};//]]>
+</script>
+<script type="text/javascript" src="/_layouts/15/init.js?rev=0WPVXXAlL8AI%2BCQOKF%2BLNA%3D%3D"></script>
+<script type="text/javascript">
+//<![CDATA[
+
+function _markElemForSaving(elemId)
+{
+    if (typeof(_spWikiRteElemIds) == 'undefined' || _spWikiRteElemIds == null)
+    {
+        _spWikiRteElemIds = new Object();
+    }
+    _spWikiRteElemIds[elemId] = true;
+}
+
+function _saveMarkedElems()
+{
+    if (typeof(_spWikiRteElemIds) != 'undefined' && _spWikiRteElemIds != null)
+    {
+        for (elemId in _spWikiRteElemIds)
+        {
+            RTE.RichTextEditor.transferContentsToInputField(elemId, true);
+        }
+    }
+}
+var _spWebPartComponents = new Object();var L_Menu_BaseUrl="/wyszukiwanie";
+var L_Menu_LCID="1045";
+var L_Menu_SiteTheme="null";
+//]]>
+</script>
+
+<script src="/WebResource.axd?d=E8VTJVL0JYgKlx906i-1QYOqejmiYh5gc-knSPy9bwGCrXYKYOrfMUqu-jenIWkVcVgLxX0tQtNObFslu6uyxSvWMQFujhxXeKm5m5iKtDcyouLp3v_E5nqeCDegaJ5MWOLta3WB-9TWnEkHpeigVzA4cAWsk3HKcvTfwoDCrWpuvugcWOmRXTE5_f8_iZuq0&amp;t=637814696020000000" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+function WebForm_OnSubmit() {
+_saveMarkedElems();UpdateFormDigest('\u002fwyszukiwanie', 1440000);if (typeof(_spFormOnSubmitWrapper) != 'undefined') {return _spFormOnSubmitWrapper();} else {return true;};
+return true;
+}
+//]]>
+</script>
+
+<div class="aspNetHidden">
+
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="97B88185" />
+	<input type="hidden" name="__SCROLLPOSITIONX" id="__SCROLLPOSITIONX" value="0" />
+	<input type="hidden" name="__SCROLLPOSITIONY" id="__SCROLLPOSITIONY" value="0" />
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdAAa6g5aX9NjMUm2W87G4mVru66zeRb5GZFub2+DT75EK9iEOUCjLMYA0UbSsjXkDUb54OyR5ZH2S0wAEZkgTPctpK63b4zYCwbaY66rU6QNf2+Vswbq27HebzZ+TsOjp/jZj7/KMrcpFOVFd4cjiI64IFnxrqTlPdJjbbdLJkpoUbw==" />
+</div>
+		
+		<!-- ===== STARTER: SharePoint Reqs this for adding columns ===================================================== -->
+		
+		<!-- ===== STARTER: Web Part Manager  ============================================================================================= -->
+		
+		
+			<!-- ===== STARTER: ScriptManager ===================================================== -->
+			
+			<!-- ===== STARTER: Ribbon Code Starts Here (compressed for code readability) ===================================================== -->
+			
+			<!-- ===== STARTER: Ribbon Code Ends Here  ======================================================================================== -->
+			
+			<!-- ===== STARTER: Main Scrolling Body Starts Here =============================================================================== -->
+			<div id="s4-workspace">
+				<div id="s4-bodyContainer">
+				
+					<!-- ===== STARTER: SharePoint looks for this div ID s4-titlerow for the "Focus on Content" Button ======================== -->
+					<div id="s4-titlerow">
+						<header class="main-header">
+							<!-- ===== STARTER: Site Logo with link to root ======================================================================= -->
+							
+							<!-- <a href="/SitePages/Strona_startowa.aspx" id="mainSite">
+								<span class="wcag-hidden">Przejdź do </span>
+								<h1 class="main-title">Sąd Najwyższy</h1>
+								<span class="wcag-hidden"> - strona startowa</span>
+							</a> -->
+
+							<div style="margin: 0px auto; text-align: center; position: relative;" class="imgbox">
+				            	<h1 style="margin: 0px;"><span class="wcag-hidden">Sąd Najwyższy</span>
+				                	<a href="/" id="mainSite">
+										<img title="Sąd Najwyższy" alt="Sąd Najwyższy" src="../../../../../../../../../../../../../../../../../../../images/logo_sn.png" style="vertical-align: middle; display: inline-block; -ms-interpolation-mode: bicubic;" class="center-fit" ></a> 
+				                </h1>
+							</div>
+
+							<ul class="quick-links">		                    
+		                        <li class="quick-links--element"><a href="/en" lang="en"><span class="wcag-hidden">Change to </span>English Version</a></li>
+  	                            <li class="quick-links--element"><a href="http://www.bip.gov.pl/">Biuletyn Informacji Publicznej </a><img src="/images/bip.png" alt=""/></li>
+		                    </ul>
+
+							<!-- ===== STARTER: Global navigation ================================================================================= -->
+							<nav class="main-nav" id="main-navigation">
+								<h2 class="wcag-hidden">Główna nawigacja</h2>
+								<div class="ms-dialogHidden">	
+                                    
+									<div id="zz1_TopNavigationMenu" class=" noindex ms-core-listMenu-horizontalBox">
+	<ul id="zz2_RootAspMenu" class="root ms-core-listMenu-root static">
+		<li class="static"><a class="static menu-item ms-core-listMenu-item ms-displayInline ms-navedit-linkNode" tabindex="0" href="/osadzienajwyzszym" accesskey="1"><span class="additional-background ms-navedit-flyoutArrow"><span class="menu-item-text">O Sądzie Najwyższym</span></span></a></li><li class="static"><a class="static menu-item ms-core-listMenu-item ms-displayInline ms-navedit-linkNode" tabindex="0" href="/aktualnosci/"><span class="additional-background ms-navedit-flyoutArrow"><span class="menu-item-text">Aktualności</span></span></a></li><li class="static"><a class="static menu-item ms-core-listMenu-item ms-displayInline ms-navedit-linkNode" tabindex="0" href="/sprawy"><span class="additional-background ms-navedit-flyoutArrow"><span class="menu-item-text">Sprawy</span></span></a></li><li class="static"><a class="static menu-item ms-core-listMenu-item ms-displayInline ms-navedit-linkNode" tabindex="0" href="/orzecznictwo/"><span class="additional-background ms-navedit-flyoutArrow"><span class="menu-item-text">Orzecznictwo</span></span></a></li><li class="static"><a class="static menu-item ms-core-listMenu-item ms-displayInline ms-navedit-linkNode" tabindex="0" href="/publikacje/"><span class="additional-background ms-navedit-flyoutArrow"><span class="menu-item-text">Publikacje</span></span></a></li><li class="static"><a class="static menu-item ms-core-listMenu-item ms-displayInline ms-navedit-linkNode" tabindex="0" href="/informacjepraktyczne/"><span class="additional-background ms-navedit-flyoutArrow"><span class="menu-item-text">Informacje</span></span></a></li>
+	</ul>
+</div>									
+								</div>
+							</nav>
+                           
+                            <img class='mobile-nav-icon' alt='Przejdź do nawigacji mobilnej' src='/_catalogs/masterpage/SN/images/menu-icon.svg?r=07032015'/>
+                            
+                            
+						</header>
+						<!--<div class="event-100lecie mob-hidden">
+							<div class="event-center">
+								<a href="http://www.sn.pl/sites/100lecie/jubileusz/SitePages/Przygotowania_do_jubileuszu.aspx" class="event-center-link"></a>
+							</div>
+						</div>-->
+					</div>
+					<!--<div class=" mobile-event mob-visible">
+						<span><a href="http://www.sn.pl/sites/100lecie/jubileusz/SitePages/Przygotowania_do_jubileuszu.aspx">100-LECIE SĄDU NAJWYŻSZEGO</a></span>							
+					</div>-->
+					
+				<!-- ===== STARTER: Body Area (includes left nav and body) ==================================================================== -->
+					<div class="main-container clearfix">
+						<nav class="secondary-navigation" id="side-navigation">
+							<h2 class="wcag-hidden">Nawigacja drugiego stopnia</h2>
+							<div id="sideNavBox" class="ms-dialogHidden ms-forceWrap ms-noList">
+								
+									<div class="ms-core-sideNavBox-removeLeftMargin">
+										<div id="ctl00_PlaceHolderLeftNavBar_QuickLaunchNavigationManager">
+	<!-- ===== STARTER: Current navigation Data Provider ==================================================================================== --><!-- ===== STARTER: Current navigation menu ==================================================================================== -->
+										<div id="zz3_V4QuickLaunchMenu" class=" noindex ms-core-listMenu-verticalBox">
+		<ul id="zz4_RootAspMenu" class="root ms-core-listMenu-root static">
+			<li class="static"><a class="static menu-item ms-core-listMenu-item ms-displayInline ms-navedit-linkNode" tabindex="0" href="/wyszukiwanie/SitePages/Wyszukiwanie.aspx"><span class="additional-background ms-navedit-flyoutArrow"><span class="menu-item-text">Szukaj w serwisie</span></span></a></li><li class="static selected"><a class="static selected menu-item ms-core-listMenu-item ms-displayInline ms-bold ms-core-listMenu-selected ms-navedit-linkNode" tabindex="0" href="/wyszukiwanie/SitePages/orzeczenia.aspx"><span class="additional-background ms-navedit-flyoutArrow"><span class="menu-item-text">Szukaj orzeczenia</span><span class="ms-hidden">Obecnie wybrane</span></span></a></li><li class="static"><a class="static menu-item ms-core-listMenu-item ms-displayInline ms-navedit-linkNode" tabindex="0" href="/wyszukiwanie/SitePages/e-sprawa.aspx"><span class="additional-background ms-navedit-flyoutArrow"><span class="menu-item-text">Szukaj sprawy</span></span></a></li>
+		</ul>
+	</div>
+										
+</div>
+									</div>
+								
+							</div>			
+						</nav>		
+						<!-- ===== STARTER: Main Content ========================================================================================== -->
+						<article class="page-container">												
+							<div class="container--header-bar mob-hidden">
+								<!--<span class="breadcrumbs" HideInteriorRootNodes="true"><a href="#ctl00_ctl29_SkipLink"><img alt="Pomiń hierarchię stron" src="/WebResource.axd?d=QP6DtLYfbLHQWzK_I9MXvONSpdAx-nbZ81tSZe9a4VKF2w3l1-hPJ4pCtwq6X48HfheSI2_Bt3o6W8PbkgUtBkYG86s4vNmwyyoyNuLbK-U1&amp;t=637814689746327080" width="0" height="0" style="border-width:0px;" /></a><span><a class="breadcrumbs--element" href="/">Sąd Najwyższy</a></span><span class="breadcrumbs--separator"></span><span><a class="breadcrumbs--element" href="/wyszukiwanie">Wyszukiwanie</a></span><span class="breadcrumbs--separator"></span><span class="breadcrumbs--element">orzeczenia</span><a id="ctl00_ctl29_SkipLink"></a></span>-->
+								<ul class="breadcrumbs">
+	<li class="breadcrumbs--element"><img alt="" src="../../images/menu-right.gif" /><a href="https://www.sn.pl">Sąd Najwyższy</a></li><li class="breadcrumbs--element"><img alt="" src="../../images/menu-right.gif" /><a href="https://www.sn.pl/wyszukiwanie">Wyszukiwanie</a></li><li class="breadcrumbs--element"><img alt="" src="../../images/menu-right.gif" /><a href="/wyszukiwanie/SitePages/orzeczenia.aspx?Sygnatura=II%20CSK%209999%2F47">Baza orzeczeń</a></li>
+</ul>
+								<div class="print-icon-container"><a href="javascript:window.print()" ><span class="wcag-hidden">Wydrukuj stronę</span></a></div>
+							</div>						
+							<div id="contentBox">								
+								<!-- ===== STARTER: Main Placeholder gets replaced with content of the page ======================================= -->
+								
+	<span id="ctl00_PlaceHolderMain_wikiPageNameDisplay" style="display: none;">
+		orzeczenia
+	</span>
+	<span id="ctl00_PlaceHolderMain_wikiPageNameEdit" style="display:none;">
+		<input name="ctl00$PlaceHolderMain$wikiPageNameEditTextBox" type="text" value="orzeczenia" maxlength="123" id="ctl00_PlaceHolderMain_wikiPageNameEditTextBox" />
+	</span>
+	<div style='display:none'><input type="submit" name="ctl00$PlaceHolderMain$btnWikiEdit" value="edit" onclick="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$PlaceHolderMain$btnWikiEdit&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" id="ctl00_PlaceHolderMain_btnWikiEdit" /></div><div style='display:none'><input type="submit" name="ctl00$PlaceHolderMain$btnWikiSave" value="edit" onclick="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$PlaceHolderMain$btnWikiSave&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" id="ctl00_PlaceHolderMain_btnWikiSave" /></div><div style='display:none'><input type="submit" name="ctl00$PlaceHolderMain$btnWikiRevert" value="Revert" onclick="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$PlaceHolderMain$btnWikiRevert&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" id="ctl00_PlaceHolderMain_btnWikiRevert" /></div>
+	<div id="ctl00_PlaceHolderMain_WikiField">
+	<div class="ms-wikicontent ms-rtestate-field" style="padding-right: 10px"><div class="ExternalClassE1E65EEEE0DF4D07B21541756E51DAED"><table id="layoutsTable" style="width&#58;100%;"><tbody><tr style="vertical-align&#58;top;"><td style="width&#58;100%;"><div class="ms-rte-layoutszone-outer" style="width&#58;100%;"><div class="ms-rte-layoutszone-inner" aria-label="Edytor tekstu sformatowanego"><div class="ms-rtestate-read ms-rte-wpbox"><div class="ms-rtestate-notify  ms-rtestate-read 3c6c0b77-90be-499e-9ef2-a17d36ba25fc" id="div_3c6c0b77-90be-499e-9ef2-a17d36ba25fc" unselectable="on"></div><div id="vid_3c6c0b77-90be-499e-9ef2-a17d36ba25fc" unselectable="on" style="display&#58;none;"></div></div><div class="ms-rtestate-read ms-rte-wpbox" unselectable="on"><div class="ms-rtestate-notify  ms-rtestate-read 78f099cc-1447-41da-9b40-91b759c4f782" id="div_78f099cc-1447-41da-9b40-91b759c4f782" unselectable="on"></div><div id="vid_78f099cc-1447-41da-9b40-91b759c4f782" unselectable="on" style="display&#58;none;"></div></div><strong></strong><div class="ms-rtestate-read ms-rte-wpbox" unselectable="on"><div class="ms-rtestate-notify  ms-rtestate-read 6bd99a9b-63c1-4e61-b012-e0b3e2b3201d" id="div_6bd99a9b-63c1-4e61-b012-e0b3e2b3201d" unselectable="on"></div><div id="vid_6bd99a9b-63c1-4e61-b012-e0b3e2b3201d" unselectable="on" style="display&#58;none;"></div></div><div class="ms-rtestate-read ms-rte-wpbox" unselectable="on"><div class="ms-rtestate-notify  ms-rtestate-read 76f9f6b1-db88-4a92-889d-01099461acca" id="div_76f9f6b1-db88-4a92-889d-01099461acca" unselectable="on"></div><div id="vid_76f9f6b1-db88-4a92-889d-01099461acca" unselectable="on" style="display&#58;none;"></div></div></div></div></td></tr></tbody></table><span id="layoutsData" style="display&#58;none;">false,false,1</span></div></div>
+</div>
+	<div class="ms-webpart-zone ms-fullWidth">
+	<div id="MSOZoneCell_WebPartctl00_ctl27_g_3c6c0b77_90be_499e_9ef2_a17d36ba25fc" class="s4-wpcell-plain ms-webpartzone-cell ms-webpart-cell-vertical ms-fullWidth ">
+		<div class="ms-webpart-chrome ms-webpart-chrome-vertical ms-webpart-chrome-fullWidth ">
+			<div WebPartID="7b17a908-a555-4b1e-a8e5-98a9f2445134" HasPers="false" id="WebPartctl00_ctl27_g_3c6c0b77_90be_499e_9ef2_a17d36ba25fc" width="100%" class="ms-WPBody " allowDelete="false" allowExport="false" style="" ><div id="ctl00_ctl27_g_3c6c0b77_90be_499e_9ef2_a17d36ba25fc">
+				
+
+<div class="www">
+    <h2>
+        Baza orzeczeń
+    </h2>
+    <div class="skipnav"><a href="#list">Przejdź do wyników wyszukiwania</a></div>
+    
+
+    <div id="ctl00_ctl27_g_3c6c0b77_90be_499e_9ef2_a17d36ba25fc_ctl00_PanelTagList">
+					
+        <div class="TagMenu">
+            <div class="Menu_back">
+                <h3>Kryteria wyszukiwania</h3>
+                
+                        <dl class="Level">
+                    
+
+                            <dt class="Label">Sygnatura:</dt> <dd class="Value">II CSK 9999/47</dd>
+
+                    
+                        </dl>
+                    
+            </div>
+            <div class="TagButton">
+                <input type="submit" name="ctl00$ctl27$g_3c6c0b77_90be_499e_9ef2_a17d36ba25fc$ctl00$ButtonSearchMod" value="Zmień kryteria" onclick="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$ctl27$g_3c6c0b77_90be_499e_9ef2_a17d36ba25fc$ctl00$ButtonSearchMod&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" id="ctl00_ctl27_g_3c6c0b77_90be_499e_9ef2_a17d36ba25fc_ctl00_ButtonSearchMod" class="mod_btn" />
+            </div>
+        </div>
+    
+				</div>
+
+    <div id="ctl00_ctl27_g_3c6c0b77_90be_499e_9ef2_a17d36ba25fc_ctl00_PanelError">
+					
+        <div class="ErrorMSG">
+            Nie znaleziono orzeczeń spełniających kryteria wyszukiwania
+        </div>
+    
+				</div>
+
+    
+
+    
+</div>
+
+
+
+
+
+
+
+			</div><div class="ms-clear"></div></div>
+		</div><div class="ms-PartSpacingVertical"></div>
+	</div><div id="MSOZoneCell_WebPartctl00_ctl27_g_78f099cc_1447_41da_9b40_91b759c4f782" class="s4-wpcell-plain ms-webpartzone-cell ms-webpart-cell-vertical ms-fullWidth ">
+		<div class="ms-webpart-chrome ms-webpart-chrome-vertical ms-webpart-chrome-fullWidth ">
+			<div WebPartID="17f58bfe-d457-4c46-b11a-841dde5efd43" HasPers="false" id="WebPartctl00_ctl27_g_78f099cc_1447_41da_9b40_91b759c4f782" width="100%" class="ms-WPBody " allowDelete="false" allowExport="false" style="" ><div id="ctl00_ctl27_g_78f099cc_1447_41da_9b40_91b759c4f782">
+				
+<div class="www">
+    
+    
+    
+    
+    
+    
+</div>
+
+			</div><div class="ms-clear"></div></div>
+		</div><div class="ms-PartSpacingVertical"></div>
+	</div><div id="MSOZoneCell_WebPartWPQ1" class="s4-wpcell-plain ms-webpartzone-cell ms-webpart-cell-vertical ms-fullWidth ">
+		<div class="ms-webpart-chrome ms-webpart-chrome-vertical ms-webpart-chrome-fullWidth ">
+			<div WebPartID="43e6fc6b-9431-47a2-9293-774ebedab426" HasPers="false" id="WebPartWPQ1" width="100%" class="ms-WPBody " allowDelete="false" style="" ><div class="ms-rtestate-field"><div></div><p style="text-align: left;"><strong style="font-size: 11pt;"><em>Orzeczenia niewystępujące w internetowej bazie orzeczeń Sądu Najwyższego są udostępniane przez&#160;<a href="https://www.sn.pl/informacjepraktyczne/SitePages/Udostepnianie_informacji_publicznej.aspx" style="text-decoration: underline;"><span class="ms-rteForeColor-8" style="text-decoration: underline;">Zespół do spraw udostępniania prostej informacji publicznej i anonimizacji orzeczeń Sądu Najwyższego.</span></a></em></strong><br/></p></div><div class="ms-clear"></div></div>
+		</div><div class="ms-PartSpacingVertical"></div>
+	</div><div id="MSOZoneCell_WebPartWPQ2" class="s4-wpcell-plain ms-webpartzone-cell ms-webpart-cell-vertical ms-fullWidth ">
+		<div class="ms-webpart-chrome ms-webpart-chrome-vertical ms-webpart-chrome-fullWidth ">
+			<div WebPartID="4c815884-e363-4ca4-a723-e862368da4dd" HasPers="false" id="WebPartWPQ2" width="100%" class="ms-WPBody " allowDelete="false" style="display:none;" ><div class="ms-rtestate-field">​<strong unselectable="on">Uprzejmie informujemy, że w związku z pracami serwisowym korzystanie z wyszukiwarki zostało chwilowo zablokowane.</strong><br/></div><div class="ms-clear"></div></div>
+		</div>
+	</div>
+</div>
+								
+							</div>							
+						</article>
+					</div>
+				</div>
+			</div>
+			<!-- ===== STARTER: Main Scrolling Body Ends Here ================================================================================= -->
+				
+		    <div class="goto-top mob-hidden"><a href="#" onclick="return focusToStart();">Przejdź do początku</a></div>
+		    <div class="main-footer--shadow"></div>
+		    <footer class="main-footer" id="footer">    		    
+			    <section class="main-footer--inner">
+			    	<h2 class="wcag-hidden">Stopka</h2>
+				    <ul class="footer-links">
+					    <li class="footer-links--element"><a href="/wyszukiwanie/">Wyszukiwanie</a></li>
+					    <li class="footer-links--element"><a href="/informacjepraktyczne/SitePages/Adres_i_mapa_dojazdu.aspx">Adres i mapa dojazdu</a></li>
+					    <li class="footer-links--element"><a href="/informacjepraktyczne/SitePages/Dane_teleadresowe.aspx">Dane teleadresowe</a></li>
+					    <li class="footer-links--element"><a href="/informacjepraktyczne/SitePages/Elektroniczna_skrzynka_podawcza.aspx">Elektr. skrzynka podawcza</a></li>
+					    <li class="footer-links--element"><a href="/informacjepraktyczne/SitePages/Redakcja_BIP.aspx">Redakcja BIP</a></li>
+					    <li class="footer-links--element"><a href="/informacjepraktyczne/SitePages/Mapa_serwisu.aspx">Mapa serwisu</a></li>
+					    <li class="footer-links--element"><a href="/informacjepraktyczne/SitePages/Kanaly_RSS.aspx">RSS</a></li>
+					    <li class="footer-links--element"><a href="mailto:sni@sn.pl">Administrator</a></li>
+					    <li class="footer-links--element"><a href="/informacjepraktyczne/SitePages/instrukcja.aspx">Instrukcja</a></li>
+					     <li class="footer-links--element"><a href="/promemoria">Pro Memoria</a></li>
+
+				    </ul>
+			    </section>
+		    </footer>		
+
+		
+
+<script type="text/javascript">
+//<![CDATA[
+ExecuteOrDelayUntilScriptLoaded(
+    function()
+    {
+        SP.Ribbon.PageState.PageStateHandler.EnableSaveBeforeNavigate(false);
+    },
+"sp.ribbon.js");
+if (typeof(_spWikiPageNameEditorFlag) == 'undefined' || !_spWikiPageNameEditorFlag)
+{
+_spWikiPageNameEditorFlag = true;
+_spWikiPageNameDisplayElemId = 'ctl00_PlaceHolderMain_wikiPageNameDisplay';
+_spWikiPageNameEditElemId = 'ctl00_PlaceHolderMain_wikiPageNameEdit';
+_spWikiPageNameEditTextBoxId = 'ctl00_PlaceHolderMain_wikiPageNameEditTextBox';
+}
+//]]>
+</script>
+<script type="text/javascript">RegisterSod("initstrings.js", "\u002f_layouts\u002f15\u002f1045\u002finitstrings.js?rev=\u00252FiBDytmI\u00252FnwH6zauvyJzFg\u00253D\u00253D");</script>
+<script type="text/javascript">
+//<![CDATA[
+var _spFormDigestRefreshInterval = 1440000;
+var callBackFrameUrl='/WebResource.axd?d=wwI9xNooYXNZ4ahCFpMCAKEo7gqe_kXtFQT7HtsOfQbBGUeuif0XkqB09DYxFEZDqSaI_gDF-i9065QST-jPNeOFHIu2LYbdzeJmXhK9D9c1&t=637814689746327080';
+WebForm_InitCallback();
+ExecuteOrDelayUntilScriptLoaded(
+function()
+{
+var initInfo = 
+{
+itemPermMasks: {High: 16, Low: 200769 },
+listPermMasks: {High: 16, Low: 200769 },
+listId: "bf0afb87-7a92-444b-ac6f-c95cae95fb95",
+itemId: 7,
+editable: false,
+editMode: false,
+postbackScript: "__doPostBack\u0028\u0027__Page\u0027,\u0027PageCommand\u0027\u0029",
+missingRequiredFields: false,
+conflictMergeTargetStatusHtml: null
+};
+SP.Ribbon.WikiPageComponent.registerWithPageManager(initInfo);
+},
+"sp.ribbon.js");
+function _wikiCallback(arg, successCallback, context, errorCallback)
+{
+    __theFormPostData = "";__theFormPostCollection=new Array(); WebForm_OnSubmit();WebForm_InitCallback();_spResetFormOnSubmitCalledFlag();
+    WebForm_DoCallback('__Page',arg,successCallback,context,errorCallback,true);
+}
+
+if(typeof(Sys) != 'undefined' && Sys.Browser.agent == Sys.Browser.Safari && navigator.userAgent.indexOf('AppleWebKit/') > -1)
+{
+  Sys.Browser.AppleWebKit = {};
+  Sys.Browser.version = parseFloat(navigator.userAgent.match(/ AppleWebKit\/(\d+(\.\d+)?)/)[1]);
+  Sys.Browser.agent = Sys.Browser.AppleWebKit;
+}
+var _fV4UI = true;//]]>
+</script>
+<script type="text/javascript">RegisterSod("browserScript", "\u002f_layouts\u002f15\u002fie55up.js?rev=ypR\u00252FzpJuE7bcLEAVduzBZA\u00253D\u00253D");RegisterSodDep("browserScript", "strings.js");</script>
+<script type="text/javascript">
+//<![CDATA[
+
+function _RegisterWebPartPageCUI()
+{
+    var initInfo = {editable: false,isEditMode: false,allowWebPartAdder: false,listId: "{bf0afb87-7a92-444b-ac6f-c95cae95fb95}",itemId: 7,recycleBinEnabled: true,enableMinorVersioning: false,enableModeration: false,forceCheckout: false,rootFolderUrl: "\u002fwyszukiwanie\u002fSitePages",itemPermissions:{High:16,Low:200769}};
+    SP.Ribbon.WebPartComponent.registerWithPageManager(initInfo);
+    var wpcomp = SP.Ribbon.WebPartComponent.get_instance();
+    var hid;
+    hid = document.getElementById("_wpSelected");
+    if (hid != null)
+    {
+        var wpid = hid.value;
+        if (wpid.length > 0)
+        {
+            var zc = document.getElementById(wpid);
+            if (zc != null)
+                wpcomp.selectWebPart(zc, false);
+        }
+    }
+    hid = document.getElementById("_wzSelected");
+    if (hid != null)
+    {
+        var wzid = hid.value;
+        if (wzid.length > 0)
+        {
+            wpcomp.selectWebPartZone(null, wzid);
+        }
+    }
+};
+function __RegisterWebPartPageCUI() {
+ExecuteOrDelayUntilScriptLoaded(_RegisterWebPartPageCUI, "sp.ribbon.js");}
+_spBodyOnLoadFunctionNames.push("__RegisterWebPartPageCUI");var __wpmExportWarning='This Web Part Page has been personalized. As a result, one or more Web Part properties may contain confidential information. Make sure the properties contain information that is safe for others to read. After exporting this Web Part, view properties in the Web Part description file (.WebPart) by using a text editor such as Microsoft Notepad.';var __wpmCloseProviderWarning='You are about to close this Web Part.  It is currently providing data to other Web Parts, and these connections will be deleted if this Web Part is closed.  To close this Web Part, click OK.  To keep this Web Part, click Cancel.';var __wpmDeleteWarning='You are about to permanently delete this Web Part.  Are you sure you want to do this?  To delete this Web Part, click OK.  To keep this Web Part, click Cancel.';if (typeof(_v_rg_spbutton) == 'undefined')
+var _v_rg_spbutton = new Array(); 
+_v_rg_spbutton['Ribbon.WikiPageTab.EditAndCheckout.SaveEdit.Menu.SaveEdit.Edit'] = 'ctl00_PlaceHolderMain_btnWikiEdit';if (typeof(_v_rg_spbutton) == 'undefined')
+var _v_rg_spbutton = new Array(); 
+_v_rg_spbutton['Ribbon.WikiPageTab.EditAndCheckout.SaveEdit.Menu.SaveEdit.SaveAndStop'] = 'ctl00_PlaceHolderMain_btnWikiSave';if (typeof(_v_rg_spbutton) == 'undefined')
+var _v_rg_spbutton = new Array(); 
+_v_rg_spbutton['Ribbon.WikiPageTab.EditAndCheckout.SaveEdit.Menu.SaveEdit.Revert'] = 'ctl00_PlaceHolderMain_btnWikiRevert';
+theForm.oldSubmit = theForm.submit;
+theForm.submit = WebForm_SaveScrollPositionSubmit;
+
+theForm.oldOnSubmit = theForm.onsubmit;
+theForm.onsubmit = WebForm_SaveScrollPositionOnSubmit;
+g_QuickLaunchControlIds.push("zz1_TopNavigationMenu");_spBodyOnLoadFunctionNames.push('QuickLaunchInitDroppable'); var g_zz1_TopNavigationMenu = null; function init_zz1_TopNavigationMenu() { if (g_zz1_TopNavigationMenu == null) g_zz1_TopNavigationMenu = $create(SP.UI.AspMenu, null, null, null, $get('zz1_TopNavigationMenu')); } ExecuteOrDelayUntilScriptLoaded(init_zz1_TopNavigationMenu, 'SP.Core.js');
+g_QuickLaunchControlIds.push("zz3_V4QuickLaunchMenu");_spBodyOnLoadFunctionNames.push('QuickLaunchInitDroppable'); var g_zz3_V4QuickLaunchMenu = null; function init_zz3_V4QuickLaunchMenu() { if (g_zz3_V4QuickLaunchMenu == null) g_zz3_V4QuickLaunchMenu = $create(SP.UI.AspMenu, null, null, null, $get('zz3_V4QuickLaunchMenu')); } ExecuteOrDelayUntilScriptLoaded(init_zz3_V4QuickLaunchMenu, 'SP.Core.js');
+
+function RelatedAdder_addWebPartToRTECore(adder, relatedWeb, relatedList, relatedField, sourceWebPart)
+{
+    var range = RTE.Cursor.get_range();
+    range.collapse(false);
+    var targetWebPartId = adder._createWebpartPlaceholderInRte(range);
+    if (targetWebPartId == null)
+        return false;
+    if (IsFullNameDefined('SP.UI.ModalDialog.showWaitScreenWithNoClose'))
+    {
+        SP.UI.ModalDialog.showWaitScreenWithNoClose(SP.Res.genericLoading, SP.Res.genericLoading, 76, 290);
+    }
+    __doPostBack('ctl00$ctl42', 'addItemAndConnect&wpz&' + relatedWeb + '&' + relatedList + '&' + relatedField + '&' + sourceWebPart + '&' + targetWebPartId);
+}
+function RelatedAdder_addWebPartToRTE(relatedWeb, relatedList, relatedField, sourceWebPart)
+{
+    var editableRegion = RTE.Canvas.currentEditableRegion();
+    if (!RTE.Canvas.getRestriction(editableRegion, RTE.Canvas.allowWebParts, false)) {
+        return false;
+    }
+
+    var adder = window.WPAdder;
+    if (!adder) {
+        LoadWPAdderOnDemand();
+        ExecuteOrDelayUntilEventNotified(
+            function()
+            {
+                var adder = window.WPAdder;
+                if (!adder)
+                {
+                    return false;
+                }
+                RelatedAdder_addWebPartToRTECore(adder, relatedWeb, relatedList, relatedField, sourceWebPart);
+            },
+            "_spEventWebPartAdderReady");
+    }
+    else
+    {
+        RelatedAdder_addWebPartToRTECore(adder, relatedWeb, relatedList, relatedField, sourceWebPart);
+    }
+}
+function RelatedAdder_addItemAndConnect(zone, relatedWeb, relatedList, relatedField, sourceWebPart, bAddToWikiZone)
+{
+    if (bAddToWikiZone)
+    {
+        ExecuteOrDelayUntilScriptLoaded( 
+            function()
+            {
+                RelatedAdder_addWebPartToRTE(relatedWeb, relatedList, relatedField, sourceWebPart);
+            },
+            "sp.ui.rte.js");
+    }
+    else
+    {
+        __doPostBack('ctl00$ctl42', 'addItemAndConnect&' + zone + '&' + relatedWeb + '&' + relatedList + '&' + relatedField + '&' + sourceWebPart + '&');
+    }
+}
+            //]]>
+</script>
+</form>
+			
+        <!--<script type='text/javascript' src='/_catalogs/masterpage/SN/js/jquery-1.11.2.min.js?r=07032015' ></script>-->
+		<script type='text/javascript' src='/_catalogs/masterpage/SN/js/TweenMax.min.js?r=07032015' ></script>
+		<script type='text/javascript' src='/_catalogs/masterpage/SN/js/jquery.gsap.min.js?r=07032015' ></script>
+        <script type='text/javascript' src='/_catalogs/masterpage/SN/js/slideout.min.js?r=07032015' ></script>
+        <script type='text/javascript' src='/_catalogs/masterpage/SN/js/main.js?r=07032015' ></script>       
+        <script type='text/javascript' src='/_catalogs/masterpage/SN/js/modernizr.custom.js?r=30082015' ></script>		
+		<script type='text/javascript' src='/_catalogs/masterpage/SN/jquery-ui/jquery-ui.min.js?r=30082015' ></script>
+		<script type='text/javascript' src='/_catalogs/masterpage/SN/jquery-ui/datepicker-pl.js?r=30082015' ></script>
+		
+		<script type='text/javascript' src='/_catalogs/masterpage/SN/wcag/accesskey.js?r=30082015' ></script>
+		<script type='text/javascript' src='/_catalogs/masterpage/SN/wcag/title_blank.js?r=30082015' ></script>
+		<!-- content that cannot be removed put below	 -->
+		<script type="text/jscript"> 
+          $(function() {
+          	if (!Modernizr.inputtypes.date) {
+    			$('input[type=date]').datepicker($.extend({
+	                    showOn: "button",
+	                    buttonImage: "/images/calendar2.png",
+	      				buttonImageOnly: true,
+	      				buttonText: "Wybierz datę",
+	      				showMonthAfterYear: false,
+	      				dateFormat:'yyyy-MM-dd'  //taki format musi byc zgodny z HTML5
+	      			},
+	      			$.datepicker.regional['pl']
+	      		));
+	      	}
+	  	  });
+  		</script>
+
+
+	</body>
+	
+	<!-- content that cannot be removed put below -->
+	
+	<!-- ======================================= -->
+</html>
