@@ -26,6 +26,12 @@ defmodule CheckSignatureWeb.Router do
     post "/check", CheckController, :create
   end
 
+  # Analytics proxy to avoid ad blockers (no pipeline: POST /api/event must skip CSRF)
+  scope "/", CheckSignatureWeb do
+    get "/js/stats.js", AnalyticsController, :script
+    post "/api/event", AnalyticsController, :event
+  end
+
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:check_signature, :dev_routes) do
     # If you want to use the LiveDashboard in production, you should put

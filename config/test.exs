@@ -47,3 +47,8 @@ config :check_signature, CheckSignatureWeb.CheckController,
   max_document_bytes: 100_000,
   rate_limit_max: 1_000,
   rate_limit_window_ms: 60_000
+
+# Route the analytics proxy's outbound Req calls to a Req.Test stub (no retries in tests)
+config :check_signature, :analytics_req_options,
+  plug: {Req.Test, CheckSignatureWeb.AnalyticsController},
+  retry: false
