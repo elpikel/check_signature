@@ -31,13 +31,24 @@ defmodule CheckSignature.Verification do
   def check_document(document) when is_binary(document) do
     %{signatures: signatures} = Signatures.extract(document)
 
+    # One batched cache read for the whole Document; only the misses fan out to
+    # the Sources below (and get cached individually if settled).
+    cached = Cache.fetch_many(signatures)
+
     signatures
-    |> Task.async_stream(&check/1,
+    |> Task.async_stream(&check_with_cache(&1, cached),
       max_concurrency: @max_concurrency,
       ordered: true,
       timeout: :infinity
     )
     |> Enum.map(fn {:ok, verdict} -> verdict end)
+  end
+
+  defp check_with_cache(%Signature{normalized: normalized} = signature, cached) do
+    case cached do
+      %{^normalized => verdict} -> verdict
+      _ -> signature |> resolve() |> Cache.put()
+    end
   end
 
   @doc "The configured Sources we fan out to."

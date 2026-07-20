@@ -31,6 +31,32 @@ defmodule CheckSignature.Verification.Cache do
   end
 
   @doc """
+  Batch variant of `fetch/1`: resolves many Signatures in a single query,
+  returning a map of `normalized => Verdict` for the ones that hit a cached,
+  non-expired entry. Signatures not present in the map are cache misses.
+
+  Callers verifying a whole Document use this to collapse what would otherwise
+  be one SELECT per Signature into one SELECT per Document.
+  """
+  @spec fetch_many([Signature.t()]) :: %{optional(String.t()) => Verdict.t()}
+  def fetch_many([]), do: %{}
+
+  def fetch_many(signatures) do
+    now = DateTime.utc_now()
+    by_normalized = Map.new(signatures, &{&1.normalized, &1})
+
+    query =
+      from c in CachedVerdict,
+        where: c.signature in ^Map.keys(by_normalized) and c.expires_at > ^now
+
+    query
+    |> Repo.all()
+    |> Map.new(fn %CachedVerdict{signature: normalized} = row ->
+      {normalized, rehydrate(row, Map.fetch!(by_normalized, normalized))}
+    end)
+  end
+
+  @doc """
   Persists a settled Verdict. `:inconclusive` Verdicts are ignored (returned
   as-is) so outages are never cached.
   """
