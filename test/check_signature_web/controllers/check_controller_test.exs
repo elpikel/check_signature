@@ -20,7 +20,7 @@ defmodule CheckSignatureWeb.CheckControllerTest do
 
   test "GET / serves the landing page", %{conn: conn} do
     html = conn |> get("/") |> html_response(200)
-    assert html =~ "Sprawdź Orzeczenie"
+    assert html =~ "Sprawdź Sygnaturę"
     assert html =~ "/api/check"
   end
 

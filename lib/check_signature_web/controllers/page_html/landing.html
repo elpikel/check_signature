@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sprawdź Orzeczenie — bezpłatna weryfikacja sygnatur orzeczeń w dokumentach prawnych</title>
-<meta name="description" content="Wklej pismo i sprawdź, czy powołane sygnatury orzeczeń naprawdę istnieją. Sprawdź Orzeczenie wykrywa zmyślone orzeczenia w dokumentach generowanych przez AI — bezpłatnie.">
+<title>Sprawdź Sygnaturę — bezpłatna weryfikacja sygnatur orzeczeń w dokumentach prawnych</title>
+<meta name="description" content="Wklej pismo i sprawdź, czy powołane sygnatury orzeczeń naprawdę istnieją. Sprawdź Sygnaturę wykrywa zmyślone orzeczenia w dokumentach generowanych przez AI — bezpłatnie.">
+<meta name="google-site-verification" content="0HXhLzmEi1dfxV9B9qhVTnq2lL2wg-sv7BAXsemTEdw" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -44,7 +45,7 @@ nav{
   background:var(--paper);
   position:sticky;top:0;z-index:50;
 }
-.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 0;}
+.nav-inner{position:relative;display:flex;align-items:center;justify-content:space-between;padding:16px 12px;}
 .logo{display:flex;align-items:baseline;gap:10px;text-decoration:none;color:var(--ink);}
 .logo .mark{
   font-family:'Spectral',serif;font-weight:700;font-size:1.35rem;
@@ -65,7 +66,31 @@ nav{
 .btn.red{background:var(--stamp-red);}
 .btn.red:hover{background:#951A24;}
 .btn[disabled]{opacity:.55;cursor:wait;}
-@media(max-width:640px){.nav-links a:not(.btn){display:none;}}
+.nav-toggle{
+  display:none;flex-direction:column;justify-content:center;gap:5px;
+  width:42px;height:42px;padding:9px;margin-right:-9px;
+  background:none;border:none;cursor:pointer;
+}
+.nav-toggle span{
+  display:block;height:2px;width:100%;background:var(--ink);border-radius:2px;
+  transition:transform .2s ease,opacity .2s ease;
+}
+.nav-toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+.nav-toggle[aria-expanded="true"] span:nth-child(2){opacity:0;}
+.nav-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+@media(max-width:640px){
+  .nav-toggle{display:flex;}
+  .nav-links{
+    position:absolute;top:100%;left:0;right:0;
+    flex-direction:column;align-items:stretch;gap:0;
+    background:var(--paper);border-bottom:1px solid var(--line);
+    box-shadow:0 14px 26px -18px rgba(26,34,51,.45);
+    padding:6px 12px 16px;display:none;
+  }
+  .nav-links.open{display:flex;}
+  .nav-links a{padding:13px 2px;font-size:1rem;border-bottom:1px solid var(--line);}
+  .nav-links a.btn{margin-top:12px;padding:13px;text-align:center;border-bottom:none;}
+}
 
 /* ---------- hero ---------- */
 .hero{padding:64px 0 64px;}
@@ -219,10 +244,13 @@ footer{padding:34px 0;font-size:.85rem;color:var(--ink-soft);}
 
 <nav>
   <div class="wrap nav-inner">
-    <a class="logo" href="#top" aria-label="Sprawdź Orzeczenie — strona główna">
-      <span class="mark">§</span><span class="name">Sprawdź Orzeczenie</span>
+    <a class="logo" href="#top" aria-label="Sprawdź Sygnaturę — strona główna">
+      <span class="mark">§</span><span class="name">Sprawdź Sygnaturę</span>
     </a>
-    <div class="nav-links">
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
       <a href="#jak-to-dziala">Jak to działa</a>
       <a href="#werdykty">Werdykty</a>
       <a href="#zrodla">Źródła</a>
@@ -265,7 +293,7 @@ footer{padding:34px 0;font-size:.85rem;color:var(--ink-soft);}
 <section class="alt problem">
   <div class="wrap">
     <p class="problem-quote">Zmyślona sygnatura wygląda dokładnie tak samo jak prawdziwa. Różnicę widać dopiero wtedy, gdy ktoś jej poszuka.</p>
-    <p>Pisma procesowe, opinie i analizy coraz częściej powstają z pomocą AI. To oszczędza godziny pracy — ale model, który nie zna właściwego orzeczenia, potrafi je wymyślić. Powołanie nieistniejącego orzeczenia przed sądem to ryzyko dla sprawy, dla klienta i dla reputacji pełnomocnika. Ręczne sprawdzanie każdej sygnatury w trzech różnych portalach zajmuje czas, którego nikt nie ma. Sprawdź Orzeczenie robi to w kilkadziesiąt sekund — i nic za to nie płacisz.</p>
+    <p>Pisma procesowe, opinie i analizy coraz częściej powstają z pomocą AI. To oszczędza godziny pracy — ale model, który nie zna właściwego orzeczenia, potrafi je wymyślić. Powołanie nieistniejącego orzeczenia przed sądem to ryzyko dla sprawy, dla klienta i dla reputacji pełnomocnika. Ręczne sprawdzanie każdej sygnatury w trzech różnych portalach zajmuje czas, którego nikt nie ma. Sprawdź Sygnaturę robi to w kilkadziesiąt sekund — i nic za to nie płacisz.</p>
   </div>
 </section>
 
@@ -361,14 +389,30 @@ footer{padding:34px 0;font-size:.85rem;color:var(--ink-soft);}
 
 <footer>
   <div class="wrap foot-inner">
-    <span><span class="mono" style="font-weight:600;">§ Sprawdź Orzeczenie</span> — weryfikacja sygnatur orzeczeń</span>
-    <span>kontakt@sprawdzorzeczenie.pl</span>
+    <span><span class="mono" style="font-weight:600;">§ Sprawdź Sygnaturę</span> — weryfikacja sygnatur orzeczeń</span>
+    <span>kontakt@orzecze-nie.pl</span>
   </div>
 </footer>
 
 <script>
 (function(){
   "use strict";
+
+  /* Mobile hamburger menu */
+  var navToggle = document.getElementById("navToggle");
+  var navLinks = document.getElementById("navLinks");
+  if(navToggle && navLinks){
+    navToggle.addEventListener("click", function(){
+      var open = navLinks.classList.toggle("open");
+      navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    navLinks.addEventListener("click", function(e){
+      if(e.target.closest("a")){
+        navLinks.classList.remove("open");
+        navToggle.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
 
   /* === Konfiguracja backendu ===
      Endpoint weryfikacji. Kontrakt:
@@ -492,7 +536,7 @@ footer{padding:34px 0;font-size:.85rem;color:var(--ink-soft);}
     var sigs = extract(text);
     if(!sigs.length){
       results.hidden = true;
-      showNotice("Nie wykryliśmy żadnej sygnatury w tym tekście. Jeśli dokument powołuje orzeczenia, a mimo to nic nie znaleźliśmy — napisz do nas: kontakt@sprawdzorzeczenie.pl. Pominięta sygnatura to dla nas najpoważniejszy błąd.");
+      showNotice("Nie wykryliśmy żadnej sygnatury w tym tekście. Jeśli dokument powołuje orzeczenia, a mimo to nic nie znaleźliśmy — napisz do nas: kontakt@orzecze-nie.pl. Pominięta sygnatura to dla nas najpoważniejszy błąd.");
       return;
     }
 

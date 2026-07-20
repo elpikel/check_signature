@@ -63,7 +63,10 @@ config :check_signature, CheckSignatureWeb.Endpoint,
       ~r"priv/gettext/.*\.po$",
       # Router, Controllers, LiveViews and LiveComponents
       ~r"lib/check_signature_web/router\.ex$",
-      ~r"lib/check_signature_web/(controllers|live|components)/.*\.(ex|heex)$"
+      ~r"lib/check_signature_web/(controllers|live|components)/.*\.(ex|heex)$",
+      # The landing page is a static .html embedded at compile time — watch it so
+      # edits hot-reload in dev (it's an @external_resource of PageController).
+      ~r"lib/check_signature_web/controllers/page_html/.*\.html$"
     ]
   ]
 

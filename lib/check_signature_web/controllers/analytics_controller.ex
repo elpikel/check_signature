@@ -9,8 +9,9 @@ defmodule CheckSignatureWeb.AnalyticsController do
   @plausible_host "plausible.przetargowyprzeglad.pl"
   @site_domain "orzecze-nie.pl"
   # Extended Plausible script: auto-tracks outbound links + supports tagged custom
-  # events (CSS-class based). `hash` is intentionally omitted (multi-page site, not a SPA).
-  @script_url "https://#{@plausible_host}/js/script.outbound-links.tagged-events.js"
+  # events (CSS-class based). `hash` is included so in-page anchor navigation on the
+  # single-page landing is tracked.
+  @script_url "https://#{@plausible_host}/js/script.hash.outbound-links.tagged-events.js"
   @cache_ttl :timer.hours(1)
 
   def script(conn, _params) do
