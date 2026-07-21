@@ -11,15 +11,12 @@ defmodule CheckSignature.Verification.Sources.SupremeCourtTest do
 
   defp sig(s), do: Signature.new(s)
 
-  describe "parse_listing/2 (harvest enumeration) against a real day listing" do
-    test "extracts one entry per ruling, deduped by ItemSID, stamped with the day" do
-      day = ~D[2020-01-15]
-      entries = SN.parse_listing(@listing, day)
+  describe "parse_listing/1 (harvest enumeration) against a real day listing" do
+    test "extracts one entry per ruling, deduped by ItemSID" do
+      entries = SN.parse_listing(@listing)
 
       # 80 rulings, each linked twice (signature + 'szczegóły') → 80 deduped entries.
       assert length(entries) == 80
-      assert Enum.all?(entries, &(&1.decided_on == day))
-      assert Enum.all?(entries, &(&1.court == "SN"))
       assert Enum.all?(entries, &(&1.url =~ "ItemSID="))
 
       # Every kept entry is signature-shaped — no 'szczegóły' noise leaks through.
@@ -28,7 +25,7 @@ defmodule CheckSignature.Verification.Sources.SupremeCourtTest do
     end
 
     test "a page with no ruling links yields no entries (harvest stop signal)" do
-      assert SN.parse_listing("<html><body>brak</body></html>", ~D[2020-01-15]) == []
+      assert SN.parse_listing("<html><body>brak</body></html>") == []
     end
   end
 

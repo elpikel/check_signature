@@ -29,17 +29,10 @@ defmodule CheckSignature.Verification.Source do
   @type cursor :: map() | nil
 
   @typedoc """
-  One harvested Ruling: a raw `:signature` string, its `:url`, and optional
-  `:court`, `:title`, `:decided_on`. `CheckSignature.Rulings.upsert_all/2`
-  normalizes and stores these.
+  One harvested Ruling: a `:signature` string and its `:url`.
+  `CheckSignature.Rulings.upsert_all/2` normalizes and stores these.
   """
-  @type harvest_entry :: %{
-          required(:signature) => String.t(),
-          required(:url) => String.t(),
-          optional(:court) => String.t() | nil,
-          optional(:title) => String.t() | nil,
-          optional(:decided_on) => Date.t() | nil
-        }
+  @type harvest_entry :: %{required(:signature) => String.t(), required(:url) => String.t()}
 
   @doc """
   Fetches one page of this Source's Rulings, **newest-first**, starting at

@@ -17,9 +17,8 @@ defmodule CheckSignature.Rulings do
   alias CheckSignature.Signatures.Signature
 
   @doc """
-  Idempotently upserts harvested entries. Each entry is a map with a raw
-  `:signature` string plus `:url` and (optionally) `:court`, `:title`,
-  `:decided_on`; `:source` is the Source key. Returns `{count, nil}`.
+  Idempotently upserts harvested entries. Each entry is a map with a `:signature`
+  string and its `:url`; `:source` is the Source key. Returns `{count, nil}`.
   """
   @spec upsert_all(String.t(), [map()]) :: {non_neg_integer(), nil}
   def upsert_all(_source, []), do: {0, nil}
@@ -29,23 +28,17 @@ defmodule CheckSignature.Rulings do
 
     rows =
       Enum.map(entries, fn entry ->
-        raw = to_string(entry[:signature] || entry[:signature_raw])
-
         %{
           source: source,
-          signature_normalized: Signature.normalize(raw),
-          signature_raw: raw,
+          signature_normalized: Signature.normalize(to_string(entry[:signature])),
           url: entry[:url],
-          court: entry[:court],
-          title: entry[:title],
-          decided_on: entry[:decided_on],
           inserted_at: now,
           updated_at: now
         }
       end)
 
     Repo.insert_all(Ruling, rows,
-      on_conflict: {:replace, [:signature_raw, :url, :court, :title, :decided_on, :updated_at]},
+      on_conflict: {:replace, [:url, :updated_at]},
       conflict_target: [:source, :signature_normalized]
     )
   end

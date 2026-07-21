@@ -12,7 +12,7 @@ defmodule CheckSignature.Verification.Sources.AdministrativeCourtsTest do
   defp sig(s), do: Signature.new(s)
 
   describe "parse_listing/1 (harvest enumeration) against a real /cbo/find page" do
-    test "extracts every result as a harvest entry with signature, url, and date" do
+    test "extracts every result as a harvest entry with signature and url" do
       entries = CBOSA.parse_listing(@find)
 
       # The fixture page holds 10 results.
@@ -21,8 +21,6 @@ defmodule CheckSignature.Verification.Sources.AdministrativeCourtsTest do
       first = hd(entries)
       assert first.signature == "II SA/Łd 580/25"
       assert first.url =~ "https://orzeczenia.nsa.gov.pl/doc/"
-      assert first.court == "NSA/WSA"
-      assert first.decided_on == ~D[2026-07-17]
     end
 
     test "an empty/exhausted page yields no entries (harvest stop signal)" do

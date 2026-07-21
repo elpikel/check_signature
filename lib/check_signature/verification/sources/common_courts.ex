@@ -25,7 +25,6 @@ defmodule CheckSignature.Verification.Sources.CommonCourts do
 
   @api_url "https://www.saos.org.pl/api/search/judgments"
   @web_url "https://www.saos.org.pl/judgments/"
-  @court "Sąd powszechny"
   # SAOS accepts pageSize up to 100; larger pages ⇒ fewer requests to backfill.
   @page_size 100
   @harvest_headers [
@@ -47,19 +46,23 @@ defmodule CheckSignature.Verification.Sources.CommonCourts do
   def harvest_page(cursor) do
     page = page_number(cursor)
 
-    case Req.get(@api_url,
-           params: [
-             courtType: "COMMON",
-             pageSize: @page_size,
-             pageNumber: page,
-             sortingField: "JUDGMENT_DATE",
-             sortingDirection: "DESC"
-           ],
-           headers: @harvest_headers,
-           receive_timeout: timeout(),
-           retry: false,
-           redirect: true
-         ) do
+    opts =
+      [
+        params: [
+          courtType: "COMMON",
+          pageSize: @page_size,
+          pageNumber: page,
+          sortingField: "JUDGMENT_DATE",
+          sortingDirection: "DESC"
+        ],
+        headers: @harvest_headers,
+        receive_timeout: timeout(),
+        retry: :transient,
+        max_retries: 3,
+        redirect: true
+      ] ++ Application.get_env(:check_signature, :harvest_req_options, [])
+
+    case Req.get(@api_url, opts) do
       {:ok, %{status: 200, body: body}} when is_map(body) ->
         case parse_dump(body) do
           [] -> {[], :done}
@@ -93,24 +96,12 @@ defmodule CheckSignature.Verification.Sources.CommonCourts do
 
   defp item_entries(item) do
     url = @web_url <> to_string(Map.get(item, "id"))
-    decided_on = parse_date(Map.get(item, "judgmentDate"))
 
     item
     |> Map.get("courtCases", [])
     |> Enum.map(&Map.get(&1, "caseNumber"))
     |> Enum.reject(&is_nil/1)
-    |> Enum.map(fn case_number ->
-      %{signature: case_number, url: url, court: @court, decided_on: decided_on}
-    end)
-  end
-
-  defp parse_date(nil), do: nil
-
-  defp parse_date(iso) do
-    case Date.from_iso8601(iso) do
-      {:ok, date} -> date
-      _ -> nil
-    end
+    |> Enum.map(fn case_number -> %{signature: case_number, url: url} end)
   end
 
   defp timeout do

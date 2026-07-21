@@ -63,9 +63,10 @@ config :phoenix, :json_library, Jason
 # Signature verification: which Sources we fan out to, how we cache, and the
 # guardrails that keep us from abusing the scraped portals. See docs/adr/.
 # Verification is answered solely from the harvested `rulings` index — no live
-# per-request scraping. This key now only tunes the background harvesters' HTTP
-# timeout (a harvest fetch slower than this is abandoned for that run).
-config :check_signature, CheckSignature.Verification, source_timeout_ms: 8_000
+# per-request scraping. This key only tunes the background harvesters' HTTP
+# timeout. It's generous because bulk pages are slow: SAOS's sorted common-courts
+# query alone takes ~11s. Off the request path, so a long wait costs nothing.
+config :check_signature, CheckSignature.Verification, source_timeout_ms: 30_000
 
 config :check_signature, CheckSignature.Signatures,
   # Never process more extracted Signatures than this per Document.
@@ -74,24 +75,29 @@ config :check_signature, CheckSignature.Signatures,
 # Oban: background harvesting of court Rulings into the local `rulings` index.
 # Browser-driven harvests (common courts) get their own single-slot queue so a
 # heavy Chromium job never crowds out the light HTTP harvests or the default queue.
+# Each Source harvests on its OWN queue at concurrency 1, so at most one harvest
+# job per Source runs at a time — a continuation and the next cron tick for the
+# same Source serialize instead of doubling the request rate to a portal. Sources
+# still progress in parallel (slow SAOS never blocks SN/CBOSA).
 config :check_signature, Oban,
   repo: CheckSignature.Repo,
-  queues: [default: 10, harvest_http: 2, harvest_browser: 1],
+  queues: [
+    default: 10,
+    harvest_supreme_court: 1,
+    harvest_administrative_courts: 1,
+    harvest_common_courts: 1
+  ],
   plugins: [
     {Oban.Plugins.Pruner, max_age: 60 * 60 * 24 * 7},
     # All three Sources harvest on the hour: SN and CBOSA scrape their official
     # portals; common courts is harvested from SAOS (the official portal is behind
-    # a browser-only bot wall). Each is a separate cron so a slow/blocked Source
-    # never stalls the others.
+    # a browser-only bot wall). Staggered minutes keep DB writes from colliding.
     {Oban.Plugins.Cron,
      crontab: [
        # Incremental sync — page newest-first, stop on the first fully-known page.
-       {"0 * * * *", CheckSignature.Verification.HarvestWorker,
-        args: %{"source" => "supreme_court"}},
-       {"15 * * * *", CheckSignature.Verification.HarvestWorker,
-        args: %{"source" => "administrative_courts"}},
-       {"30 * * * *", CheckSignature.Verification.HarvestWorker,
-        args: %{"source" => "common_courts"}}
+       {"0 * * * *", CheckSignature.Verification.Workers.SupremeCourtHarvest},
+       {"15 * * * *", CheckSignature.Verification.Workers.AdministrativeCourtsHarvest},
+       {"30 * * * *", CheckSignature.Verification.Workers.CommonCourtsHarvest}
      ]}
   ]
 

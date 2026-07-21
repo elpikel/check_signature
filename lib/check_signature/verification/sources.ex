@@ -22,21 +22,15 @@ defmodule CheckSignature.Verification.Sources do
 
   @doc "Resolves a Source key to its module, or `:error`."
   @spec fetch(String.t()) :: {:ok, module()} | :error
-  def fetch(key) when is_binary(key), do: Map.fetch(registry(), key)
+  def fetch(key) when is_binary(key), do: Map.fetch(@by_key, key)
 
   @doc "The Source key for a module (inverse of `fetch/1`)."
   @spec key(module()) :: String.t() | nil
   def key(module) do
-    Enum.find_value(registry(), fn {k, mod} -> if mod == module, do: k end)
+    Enum.find_value(@by_key, fn {k, mod} -> if mod == module, do: k end)
   end
 
   @doc "All registered `{key, module}` pairs."
   @spec all() :: [{String.t(), module()}]
-  def all, do: Map.to_list(registry())
-
-  # Tests can register extra harvestable Sources (e.g. a scripted fake) via
-  # `:extra_harvest_sources` without touching the production registry.
-  defp registry do
-    Map.merge(@by_key, Application.get_env(:check_signature, :extra_harvest_sources, %{}))
-  end
+  def all, do: Map.to_list(@by_key)
 end

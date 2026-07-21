@@ -61,14 +61,7 @@ defmodule CheckSignature.Verification do
     outcomes =
       Enum.map(rows, fn row ->
         {source_name(row.source),
-         {:matched,
-          %Ruling{
-            signature: row.signature_raw,
-            url: row.url,
-            court: row.court,
-            date: row.decided_on && Date.to_iso8601(row.decided_on),
-            title: row.title
-          }}}
+         {:matched, %Ruling{signature: row.signature_normalized, url: row.url}}}
       end)
 
     Verdict.derive(signature, outcomes)

@@ -39,6 +39,9 @@ config :phoenix_live_view,
 # Verification reads only the local index in tests; keep the harvest HTTP timeout short.
 config :check_signature, CheckSignature.Verification, source_timeout_ms: 1_000
 
+# Route harvesters' outbound Req calls to a Req.Test stub — no real portal hits.
+config :check_signature, :harvest_req_options, plug: {Req.Test, CheckSignature.HarvestStub}
+
 # Oban runs in manual mode under test: no queues drain and cron is disabled, so
 # jobs only execute when we call `perform_job/2` (or the worker's `perform/1`).
 config :check_signature, Oban, testing: :manual

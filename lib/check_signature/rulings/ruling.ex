@@ -16,11 +16,7 @@ defmodule CheckSignature.Rulings.Ruling do
   schema "rulings" do
     field :source, :string
     field :signature_normalized, :string
-    field :signature_raw, :string
     field :url, :string
-    field :court, :string
-    field :title, :string
-    field :decided_on, :date
 
     timestamps(type: :utc_datetime)
   end

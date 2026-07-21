@@ -5,7 +5,7 @@ defmodule CheckSignature.RulingsTest do
   alias CheckSignature.Signatures.Signature
 
   defp entry(sig, id) do
-    %{signature: sig, url: "https://ex.test/#{id}", court: "SN", title: "Wyrok #{sig}"}
+    %{signature: sig, url: "https://ex.test/#{id}"}
   end
 
   describe "upsert_all/2" do
@@ -18,7 +18,6 @@ defmodule CheckSignature.RulingsTest do
 
       assert [row] = Rulings.lookup(Signature.normalize("ii csk 1/20"))
       assert row.signature_normalized == "II CSK 1/20"
-      assert row.signature_raw == "II CSK 1/20"
       assert row.source == "supreme_court"
     end
 

@@ -63,13 +63,17 @@ defmodule CheckSignature.Verification.Sources.AdministrativeCourts do
   def harvest_page(cursor) do
     page = page_number(cursor)
 
-    case Req.get(@find_url,
-           params: [p: page],
-           headers: @harvest_headers,
-           receive_timeout: timeout(),
-           retry: false,
-           redirect: true
-         ) do
+    opts =
+      [
+        params: [p: page],
+        headers: @harvest_headers,
+        receive_timeout: timeout(),
+        retry: :transient,
+        max_retries: 3,
+        redirect: true
+      ] ++ Application.get_env(:check_signature, :harvest_req_options, [])
+
+    case Req.get(@find_url, opts) do
       {:ok, %{status: 200, body: body}} ->
         case parse_listing(body) do
           [] -> {[], :done}
@@ -97,7 +101,8 @@ defmodule CheckSignature.Verification.Sources.AdministrativeCourts do
   @doc """
   Parses a `/cbo/find` listing page into harvest entries. Public so it can be
   tested against a saved fixture without hitting the network. Each result is an
-  `<a href="/doc/HASH">` whose text is "<SIGNATURE> - <title> … z <YYYY-MM-DD>".
+  `<a href="/doc/HASH">` whose text is "<SIGNATURE> - <title>"; we keep the
+  signature (text before " - ") and the link.
   """
   @spec parse_listing(String.t()) :: [CheckSignature.Verification.Source.harvest_entry()]
   def parse_listing(body) do
@@ -106,35 +111,13 @@ defmodule CheckSignature.Verification.Sources.AdministrativeCourts do
     |> Floki.find("a[href^='/doc/']")
     |> Enum.map(fn a ->
       href = a |> Floki.attribute("href") |> List.first()
-      {signature, title} = a |> Floki.text() |> String.trim() |> split_signature()
 
-      %{
-        signature: signature,
-        url: @base_url <> href,
-        court: "NSA/WSA",
-        title: title,
-        decided_on: extract_date(title)
-      }
+      signature =
+        a |> Floki.text() |> String.split(" - ", parts: 2) |> List.first() |> String.trim()
+
+      %{signature: signature, url: @base_url <> href}
     end)
     |> Enum.reject(fn e -> e.signature == "" or is_nil(e.url) end)
-  end
-
-  defp split_signature(text) do
-    case String.split(text, " - ", parts: 2) do
-      [signature, title] -> {String.trim(signature), String.trim(title)}
-      [signature] -> {String.trim(signature), nil}
-    end
-  end
-
-  defp extract_date(nil), do: nil
-
-  defp extract_date(text) do
-    with [_, iso] <- Regex.run(~r/(\d{4}-\d{2}-\d{2})/, text),
-         {:ok, date} <- Date.from_iso8601(iso) do
-      date
-    else
-      _ -> nil
-    end
   end
 
   defp request(sygnatura) do

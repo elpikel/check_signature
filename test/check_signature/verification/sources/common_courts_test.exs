@@ -13,7 +13,7 @@ defmodule CheckSignature.Verification.Sources.CommonCourtsTest do
   end
 
   describe "parse_dump/1 (harvest enumeration) against a real SAOS response" do
-    test "extracts one entry per case number, with signature, url, and date" do
+    test "extracts one entry per case number, with signature and url" do
       entries = CommonCourts.parse_dump(@dump)
 
       # The fixture holds 20 COMMON judgments.
@@ -22,8 +22,6 @@ defmodule CheckSignature.Verification.Sources.CommonCourtsTest do
       first = hd(entries)
       assert first.signature == "I ACa 772/13"
       assert first.url == "https://www.saos.org.pl/judgments/31345"
-      assert first.court == "Sąd powszechny"
-      assert first.decided_on == ~D[3013-12-04]
     end
 
     test "a response with no items yields no entries (harvest stop signal)" do

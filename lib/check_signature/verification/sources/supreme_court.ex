@@ -68,21 +68,24 @@ defmodule CheckSignature.Verification.Sources.SupremeCourt do
     end
   end
 
-  # We walk newest-first, one calendar day per page; the next cursor is the day
-  # before. Every Ruling listed for `date` was decided on `date`, so we stamp it.
+  # We walk newest-first, one calendar day per page; the next cursor is the day before.
   defp fetch_day(date) do
     next = %{"date" => Date.to_iso8601(Date.add(date, -1))}
     iso = Date.to_iso8601(date)
 
-    case Req.get(@search_url,
-           params: [{"DataOd", iso}, {"DataDo", iso}],
-           headers: @harvest_headers,
-           receive_timeout: timeout(),
-           retry: false,
-           redirect: true
-         ) do
+    opts =
+      [
+        params: [{"DataOd", iso}, {"DataDo", iso}],
+        headers: @harvest_headers,
+        receive_timeout: timeout(),
+        retry: :transient,
+        max_retries: 3,
+        redirect: true
+      ] ++ Application.get_env(:check_signature, :harvest_req_options, [])
+
+    case Req.get(@search_url, opts) do
       {:ok, %{status: 200, body: body}} ->
-        {parse_listing(body, date), next}
+        {parse_listing(body), next}
 
       other ->
         Logger.warning("SupremeCourt.harvest_page/1 stopping at #{iso}: #{inspect(other)}")
@@ -98,22 +101,18 @@ defmodule CheckSignature.Verification.Sources.SupremeCourt do
   defp harvest_date(%{"date" => iso}), do: Date.from_iso8601!(iso)
 
   @doc """
-  Parses one day's SN listing into harvest entries, stamping each with `date`.
-  Public so it can be tested against a saved fixture. Each Ruling appears as two
-  `ItemSID` links (the signature and a "szczegóły" detail link) sharing an
-  ItemSID; we keep the signature-shaped one and dedupe by ItemSID.
+  Parses one day's SN listing into harvest entries. Public so it can be tested
+  against a saved fixture. Each Ruling appears as two `ItemSID` links (the
+  signature and a "szczegóły" detail link) sharing an ItemSID; we keep the
+  signature-shaped one and dedupe by ItemSID.
   """
-  @spec parse_listing(String.t(), Date.t()) :: [
-          CheckSignature.Verification.Source.harvest_entry()
-        ]
-  def parse_listing(body, date) do
+  @spec parse_listing(String.t()) :: [CheckSignature.Verification.Source.harvest_entry()]
+  def parse_listing(body) do
     body
     |> results()
     |> Enum.filter(fn {sig, _href} -> signature_like?(sig) end)
     |> Enum.uniq_by(fn {_sig, href} -> item_sid(href) end)
-    |> Enum.map(fn {sig, href} ->
-      %{signature: sig, url: href, court: "SN", decided_on: date}
-    end)
+    |> Enum.map(fn {sig, href} -> %{signature: sig, url: href} end)
   end
 
   # A signature starts with a roman-numeral division then an uppercase department
