@@ -13,6 +13,7 @@ defmodule CheckSignature.Application do
       {DNSCluster, query: Application.get_env(:check_signature, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: CheckSignature.PubSub},
       CheckSignature.RateLimiter,
+      {Oban, Application.fetch_env!(:check_signature, Oban)},
       # Start to serve requests, typically the last entry
       CheckSignatureWeb.Endpoint
     ]

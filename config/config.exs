@@ -62,20 +62,38 @@ config :phoenix, :json_library, Jason
 
 # Signature verification: which Sources we fan out to, how we cache, and the
 # guardrails that keep us from abusing the scraped portals. See docs/adr/.
-config :check_signature, CheckSignature.Verification,
-  sources: [
-    CheckSignature.Verification.Sources.CommonCourts,
-    CheckSignature.Verification.Sources.SupremeCourt,
-    CheckSignature.Verification.Sources.AdministrativeCourts
-  ],
-  # A source lookup that takes longer than this is treated as :errored.
-  source_timeout_ms: 8_000,
-  # Cache a resolved Verdict for this long before re-checking the portals.
-  cache_ttl_seconds: 60 * 60 * 24 * 7
+# Verification is answered solely from the harvested `rulings` index — no live
+# per-request scraping. This key now only tunes the background harvesters' HTTP
+# timeout (a harvest fetch slower than this is abandoned for that run).
+config :check_signature, CheckSignature.Verification, source_timeout_ms: 8_000
 
 config :check_signature, CheckSignature.Signatures,
   # Never process more extracted Signatures than this per Document.
   max_signatures: 50
+
+# Oban: background harvesting of court Rulings into the local `rulings` index.
+# Browser-driven harvests (common courts) get their own single-slot queue so a
+# heavy Chromium job never crowds out the light HTTP harvests or the default queue.
+config :check_signature, Oban,
+  repo: CheckSignature.Repo,
+  queues: [default: 10, harvest_http: 2, harvest_browser: 1],
+  plugins: [
+    {Oban.Plugins.Pruner, max_age: 60 * 60 * 24 * 7},
+    # All three Sources harvest on the hour: SN and CBOSA scrape their official
+    # portals; common courts is harvested from SAOS (the official portal is behind
+    # a browser-only bot wall). Each is a separate cron so a slow/blocked Source
+    # never stalls the others.
+    {Oban.Plugins.Cron,
+     crontab: [
+       # Incremental sync — page newest-first, stop on the first fully-known page.
+       {"0 * * * *", CheckSignature.Verification.HarvestWorker,
+        args: %{"source" => "supreme_court"}},
+       {"15 * * * *", CheckSignature.Verification.HarvestWorker,
+        args: %{"source" => "administrative_courts"}},
+       {"30 * * * *", CheckSignature.Verification.HarvestWorker,
+        args: %{"source" => "common_courts"}}
+     ]}
+  ]
 
 config :check_signature, CheckSignatureWeb.CheckController,
   # Reject Documents larger than this before extraction (bytes).

@@ -3,26 +3,32 @@ defmodule CheckSignature.Verification.Sources.CommonCourts do
   Source: common courts (sądy powszechne — district, regional, appellate).
 
   The official portal (orzeczenia.ms.gov.pl) is behind an F5/TSPD JavaScript bot
-  challenge that blocks every non-browser request (ADR 0005/0006), so this Source
-  is served by the SAOS API (saos.org.pl) instead — scoped to `courtType=COMMON`
-  so it only fills the common-courts gap; the Supreme Court and administrative
-  courts stay on their own official portals.
+  challenge that blocks every non-browser request (ADR 0005/0006), so we do not
+  scrape it. Instead this Source is **harvested** from the SAOS API
+  (saos.org.pl, ePaństwo Foundation), scoped to `courtType=COMMON`, into the local
+  `rulings` index — SAOS mirrors the official common-courts data and exposes a
+  paginated JSON search, no browser needed.
 
-  SAOS exposes an exact `caseNumber` search. As always we still confirm the
-  returned Ruling's own case number matches the queried Signature before reporting
-  `:matched`. An empty result is `:confirmed_absent` (SAOS responded and holds no
-  such common-court Ruling); a non-JSON/!200 response is `:errored`.
+  SAOS is used for *background harvesting only*, never on the live request path:
+  it's a third-party aggregator that can lag or briefly go down, which is
+  tolerable for an async, retryable, idempotent harvest but was the source of
+  per-request *inconclusive* verdicts before. Common-court checks are therefore
+  answered from the index alone.
   """
 
   @behaviour CheckSignature.Verification.Source
 
+  require Logger
+
   alias CheckSignature.Signatures.Signature
-  alias CheckSignature.Verification.{Ruling, Verdict}
-  alias CheckSignature.Verification.Sources.Retry
+  alias CheckSignature.Verification.Verdict
 
   @api_url "https://www.saos.org.pl/api/search/judgments"
   @web_url "https://www.saos.org.pl/judgments/"
-  @headers [
+  @court "Sąd powszechny"
+  # SAOS accepts pageSize up to 100; larger pages ⇒ fewer requests to backfill.
+  @page_size 100
+  @harvest_headers [
     {"user-agent", "CheckSignature/0.1 (+https://checksignature.pl; hallucination-checker)"},
     {"accept", "application/json"}
   ]
@@ -30,60 +36,80 @@ defmodule CheckSignature.Verification.Sources.CommonCourts do
   @impl true
   def name, do: "Sądy powszechne"
 
+  @doc "Never called on the request path — common courts are answered from the index."
   @impl true
-  def lookup(%Signature{} = signature) do
-    Retry.with_retry(fn -> do_lookup(signature) end)
-  end
+  @spec lookup(Signature.t()) :: Verdict.source_outcome()
+  def lookup(%Signature{}), do: {:errored, :harvest_only}
 
-  defp do_lookup(%Signature{} = signature) do
-    case request(signature.normalized) do
-      {:ok, %{status: 200, body: body}} when is_map(body) -> parse(body, signature)
-      {:ok, %{status: status}} -> {:errored, {:http_status, status}}
-      {:error, reason} -> {:errored, reason}
+  @impl true
+  @spec harvest_page(CheckSignature.Verification.Source.cursor()) ::
+          {[CheckSignature.Verification.Source.harvest_entry()], map() | :done}
+  def harvest_page(cursor) do
+    page = page_number(cursor)
+
+    case Req.get(@api_url,
+           params: [
+             courtType: "COMMON",
+             pageSize: @page_size,
+             pageNumber: page,
+             sortingField: "JUDGMENT_DATE",
+             sortingDirection: "DESC"
+           ],
+           headers: @harvest_headers,
+           receive_timeout: timeout(),
+           retry: false,
+           redirect: true
+         ) do
+      {:ok, %{status: 200, body: body}} when is_map(body) ->
+        case parse_dump(body) do
+          [] -> {[], :done}
+          entries -> {entries, %{"page" => page + 1}}
+        end
+
+      other ->
+        Logger.warning("CommonCourts.harvest_page/1 stopping at page=#{page}: #{inspect(other)}")
+        {[], :done}
     end
   rescue
-    e -> {:errored, {:exception, Exception.message(e)}}
+    e ->
+      Logger.warning("CommonCourts.harvest_page/1 raised: #{Exception.message(e)}")
+      {[], :done}
   end
 
-  defp request(case_number) do
-    Req.get(@api_url,
-      params: [caseNumber: case_number, courtType: "COMMON", pageSize: 50],
-      headers: @headers,
-      receive_timeout: timeout(),
-      retry: false,
-      redirect: true
-    )
-  end
+  # SAOS paging is 0-based.
+  defp page_number(nil), do: 0
+  defp page_number(%{"page" => n}) when is_integer(n) and n >= 0, do: n
 
   @doc """
-  Derives a Source outcome from a decoded SAOS search response. Public so it can
-  be tested against saved fixtures without hitting the network.
+  Parses a SAOS judgments search response into harvest entries — one per case
+  number on each judgment. Public so it can be tested against a saved fixture.
   """
-  @spec parse(map(), Signature.t()) :: Verdict.source_outcome()
-  def parse(body, %Signature{} = signature) when is_map(body) do
-    items = Map.get(body, "items")
-    match = is_list(items) && Enum.find_value(items, &match_item(&1, signature))
-
-    cond do
-      match -> {:matched, match}
-      is_list(items) -> :confirmed_absent
-      true -> {:errored, :unrecognized_response}
-    end
+  @spec parse_dump(map()) :: [CheckSignature.Verification.Source.harvest_entry()]
+  def parse_dump(body) when is_map(body) do
+    body
+    |> Map.get("items", [])
+    |> Enum.flat_map(&item_entries/1)
   end
 
-  defp match_item(item, %Signature{} = signature) do
-    numbers =
-      item
-      |> Map.get("courtCases", [])
-      |> Enum.map(&Map.get(&1, "caseNumber"))
-      |> Enum.reject(&is_nil/1)
+  defp item_entries(item) do
+    url = @web_url <> to_string(Map.get(item, "id"))
+    decided_on = parse_date(Map.get(item, "judgmentDate"))
 
-    if number = Enum.find(numbers, &Signature.same?(signature, &1)) do
-      %Ruling{
-        signature: number,
-        url: @web_url <> to_string(Map.get(item, "id")),
-        court: "Sąd powszechny"
-      }
+    item
+    |> Map.get("courtCases", [])
+    |> Enum.map(&Map.get(&1, "caseNumber"))
+    |> Enum.reject(&is_nil/1)
+    |> Enum.map(fn case_number ->
+      %{signature: case_number, url: url, court: @court, decided_on: decided_on}
+    end)
+  end
+
+  defp parse_date(nil), do: nil
+
+  defp parse_date(iso) do
+    case Date.from_iso8601(iso) do
+      {:ok, date} -> date
+      _ -> nil
     end
   end
 

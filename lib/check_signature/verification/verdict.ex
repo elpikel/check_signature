@@ -35,6 +35,16 @@ defmodule CheckSignature.Verification.Verdict do
         }
 
   @doc """
+  A Verdict for a Signature we could not confirm — it isn't in the harvested
+  index. Deliberately `:inconclusive`, never `:not_found`: the index lags and can
+  be incomplete, so absence from it is *unknown*, not an accusation.
+  """
+  @spec inconclusive(Signature.t()) :: t()
+  def inconclusive(%Signature{} = signature) do
+    %__MODULE__{signature: signature, status: :inconclusive}
+  end
+
+  @doc """
   Derives a Verdict for `signature` from `outcomes` — a list of
   `{source_name, outcome}` pairs, one per Source we fanned out to.
   """

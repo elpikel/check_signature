@@ -21,4 +21,32 @@ defmodule CheckSignature.Verification.Source do
 
   @doc "Looks up a single Signature in this Source."
   @callback lookup(Signature.t()) :: Verdict.source_outcome()
+
+  @typedoc """
+  An opaque, Source-defined position in the newest-first Ruling listing (e.g. a
+  page number, a date, a court id). `nil` means "start from the newest".
+  """
+  @type cursor :: map() | nil
+
+  @typedoc """
+  One harvested Ruling: a raw `:signature` string, its `:url`, and optional
+  `:court`, `:title`, `:decided_on`. `CheckSignature.Rulings.upsert_all/2`
+  normalizes and stores these.
+  """
+  @type harvest_entry :: %{
+          required(:signature) => String.t(),
+          required(:url) => String.t(),
+          optional(:court) => String.t() | nil,
+          optional(:title) => String.t() | nil,
+          optional(:decided_on) => Date.t() | nil
+        }
+
+  @doc """
+  Fetches one page of this Source's Rulings, **newest-first**, starting at
+  `cursor` (`nil` = newest). Returns the page's entries and the next cursor, or
+  `:done` when the listing is exhausted. Implemented only by harvestable Sources.
+  """
+  @callback harvest_page(cursor()) :: {[harvest_entry()], cursor() | :done}
+
+  @optional_callbacks harvest_page: 1
 end

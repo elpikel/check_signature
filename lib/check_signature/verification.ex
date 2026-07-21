@@ -2,109 +2,82 @@ defmodule CheckSignature.Verification do
   @moduledoc """
   Verifying whether a Signature refers to a Ruling that actually exists.
 
-  The rule (ADR 0002): every check fans out to *all* configured Sources
-  concurrently — no routing by court, because a misrouted Signature would find
-  nothing and be falsely branded a hallucination. A settled result is cached
-  (ADR 0004) so repeat lookups never re-scrape.
+  Answers come solely from the local `rulings` index, harvested in the background
+  from the court portals (`CheckSignature.Verification.HarvestWorker`). A request
+  never scrapes a portal:
 
-  This module verifies one Signature. Checking a whole Document — extraction,
-  bounded concurrency across signatures, streaming — is the LiveView's job.
+    * the Signature is in the index → `:found`, linking the harvested Rulings;
+    * the Signature is not in the index → `:inconclusive` ("couldn't confirm —
+      check manually"). Never `:not_found`: the index is a harvested mirror that
+      lags and, during backfill, is incomplete, so absence from it is *unknown*,
+      not proof the Ruling was invented. This upholds the never-falsely-accuse
+      contract (CONTEXT.md / the ADRs).
+
+  Checking a whole Document — extraction, one Verdict per unique Signature — is
+  done here; the per-Document cap lives in `CheckSignature.Signatures`.
   """
 
+  alias CheckSignature.Rulings
   alias CheckSignature.Signatures
   alias CheckSignature.Signatures.Signature
-  alias CheckSignature.Verification.{Cache, Verdict}
-
-  # Cap how many Signatures we verify concurrently. Because each Signature hits
-  # each Source exactly once, this also bounds concurrent requests *per portal* —
-  # keeping us gentle on bot-protected hosts (sn.pl behind Incapsula) that block
-  # bursts. Kept low deliberately; transient blocks are additionally retried by
-  # each Source adapter.
-  @max_concurrency 3
+  alias CheckSignature.Verification.{Ruling, Sources, Verdict}
 
   @doc """
   Checks every Signature cited in a Document and returns one Verdict per unique
-  Signature, in document order. Extraction (and its per-Document cap) is applied
-  first; the checks then run with bounded concurrency.
+  Signature, in document order. One batched index read serves the whole Document.
   """
   @spec check_document(String.t()) :: [Verdict.t()]
   def check_document(document) when is_binary(document) do
     %{signatures: signatures} = Signatures.extract(document)
+    index = index_lookup(signatures)
 
-    # One batched cache read for the whole Document; only the misses fan out to
-    # the Sources below (and get cached individually if settled).
-    cached = Cache.fetch_many(signatures)
-
-    signatures
-    |> Task.async_stream(&check_with_cache(&1, cached),
-      max_concurrency: @max_concurrency,
-      ordered: true,
-      timeout: :infinity
-    )
-    |> Enum.map(fn {:ok, verdict} -> verdict end)
-  end
-
-  defp check_with_cache(%Signature{normalized: normalized} = signature, cached) do
-    case cached do
-      %{^normalized => verdict} -> verdict
-      _ -> signature |> resolve() |> Cache.put()
-    end
-  end
-
-  @doc "The configured Sources we fan out to."
-  @spec sources() :: [module()]
-  def sources do
-    :check_signature
-    |> Application.get_env(__MODULE__, [])
-    |> Keyword.get(:sources, [])
-  end
-
-  @doc """
-  Returns the Verdict for a Signature: cache first, otherwise fan out to all
-  Sources, derive the Verdict, and cache it if settled.
-  """
-  @spec check(Signature.t()) :: Verdict.t()
-  def check(%Signature{} = signature) do
-    case Cache.fetch(signature) do
-      {:ok, verdict} -> verdict
-      :miss -> signature |> resolve() |> Cache.put()
-    end
-  end
-
-  defp resolve(%Signature{} = signature) do
-    signature
-    |> fan_out()
-    |> then(&Verdict.derive(signature, &1))
-  end
-
-  defp fan_out(%Signature{} = signature) do
-    srcs = sources()
-
-    srcs
-    |> Task.async_stream(
-      fn source -> {source.name(), safe_lookup(source, signature)} end,
-      timeout: timeout_ms() + 2_000,
-      on_timeout: :kill_task,
-      ordered: true
-    )
-    |> Enum.zip(srcs)
-    |> Enum.map(fn
-      {{:ok, named_outcome}, _source} -> named_outcome
-      {{:exit, _reason}, source} -> {source.name(), {:errored, :timeout}}
+    Enum.map(signatures, fn %Signature{normalized: normalized} = signature ->
+      case Map.get(index, normalized) do
+        nil -> Verdict.inconclusive(signature)
+        rows -> verdict_from_index(signature, rows)
+      end
     end)
   end
 
-  defp safe_lookup(source, signature) do
-    source.lookup(signature)
-  rescue
-    e -> {:errored, {:exception, Exception.message(e)}}
-  catch
-    kind, reason -> {:errored, {kind, reason}}
+  @doc "Returns the Verdict for a single Signature, from the harvested index."
+  @spec check(Signature.t()) :: Verdict.t()
+  def check(%Signature{normalized: normalized} = signature) do
+    case Rulings.lookup(normalized) do
+      [] -> Verdict.inconclusive(signature)
+      rows -> verdict_from_index(signature, rows)
+    end
   end
 
-  defp timeout_ms do
-    :check_signature
-    |> Application.get_env(__MODULE__, [])
-    |> Keyword.get(:source_timeout_ms, 8_000)
+  defp index_lookup(signatures) do
+    signatures
+    |> Enum.map(& &1.normalized)
+    |> Rulings.lookup_many()
+    |> Enum.group_by(& &1.signature_normalized)
+  end
+
+  # Builds a `found` Verdict from harvested index rows, reusing `Verdict.derive/2`
+  # by presenting each row as a `{source_name, {:matched, Ruling}}` outcome.
+  defp verdict_from_index(%Signature{} = signature, rows) do
+    outcomes =
+      Enum.map(rows, fn row ->
+        {source_name(row.source),
+         {:matched,
+          %Ruling{
+            signature: row.signature_raw,
+            url: row.url,
+            court: row.court,
+            date: row.decided_on && Date.to_iso8601(row.decided_on),
+            title: row.title
+          }}}
+      end)
+
+    Verdict.derive(signature, outcomes)
+  end
+
+  defp source_name(key) do
+    case Sources.fetch(key) do
+      {:ok, module} -> module.name()
+      :error -> key
+    end
   end
 end

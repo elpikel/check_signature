@@ -36,11 +36,12 @@ config :phoenix, :plug_init_mode, :runtime
 config :phoenix_live_view,
   enable_expensive_runtime_checks: true
 
-# In test, fan out to a single Mox-backed Source so we never scrape real portals.
-config :check_signature, CheckSignature.Verification,
-  sources: [CheckSignature.Verification.MockSource],
-  source_timeout_ms: 1_000,
-  cache_ttl_seconds: 60
+# Verification reads only the local index in tests; keep the harvest HTTP timeout short.
+config :check_signature, CheckSignature.Verification, source_timeout_ms: 1_000
+
+# Oban runs in manual mode under test: no queues drain and cron is disabled, so
+# jobs only execute when we call `perform_job/2` (or the worker's `perform/1`).
+config :check_signature, Oban, testing: :manual
 
 # Make the rate limiter permissive so it doesn't interfere with feature tests.
 config :check_signature, CheckSignatureWeb.CheckController,

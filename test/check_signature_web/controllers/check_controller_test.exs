@@ -1,16 +1,7 @@
 defmodule CheckSignatureWeb.CheckControllerTest do
-  use CheckSignatureWeb.ConnCase, async: false
+  use CheckSignatureWeb.ConnCase, async: true
 
-  import Mox
-
-  alias CheckSignature.Verification.{MockSource, Ruling}
-
-  setup :set_mox_global
-
-  setup do
-    stub(MockSource, :name, fn -> "Sąd Najwyższy" end)
-    :ok
-  end
+  alias CheckSignature.Rulings
 
   defp post_document(conn, document) do
     conn
@@ -24,10 +15,10 @@ defmodule CheckSignatureWeb.CheckControllerTest do
     assert html =~ "/api/check"
   end
 
-  test "found signature returns a matched source with url", %{conn: conn} do
-    stub(MockSource, :lookup, fn _ ->
-      {:matched, %Ruling{signature: "II CSK 234/19", url: "https://example.test/ruling"}}
-    end)
+  test "a Signature in the index returns found with a matched source and url", %{conn: conn} do
+    Rulings.upsert_all("supreme_court", [
+      %{signature: "II CSK 234/19", url: "https://example.test/ruling"}
+    ])
 
     resp =
       conn |> post_document("Powołano wyrok II CSK 234/19 w tej sprawie.") |> json_response(200)
@@ -42,24 +33,12 @@ defmodule CheckSignatureWeb.CheckControllerTest do
     assert url == "https://example.test/ruling"
   end
 
-  test "absent signature returns not_found with confirmed_absent source", %{conn: conn} do
-    stub(MockSource, :lookup, fn _ -> :confirmed_absent end)
-
+  test "a Signature absent from the index returns inconclusive, never not_found", %{conn: conn} do
     resp = conn |> post_document("Rzekomy wyrok II CSK 999/99.") |> json_response(200)
 
     assert [verdict] = resp["verdicts"]
-    assert verdict["verdict"] == "not_found"
-    assert [%{"outcome" => "confirmed_absent"}] = verdict["sources"]
-  end
-
-  test "an errored source yields inconclusive, never not_found", %{conn: conn} do
-    stub(MockSource, :lookup, fn _ -> {:errored, :timeout} end)
-
-    resp = conn |> post_document("Zob. II CSK 555/18.") |> json_response(200)
-
-    assert [verdict] = resp["verdicts"]
     assert verdict["verdict"] == "inconclusive"
-    assert [%{"outcome" => "errored"}] = verdict["sources"]
+    assert verdict["sources"] == []
   end
 
   test "a document with no signatures returns an empty verdict list", %{conn: conn} do

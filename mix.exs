@@ -59,6 +59,7 @@ defmodule CheckSignature.MixProject do
        compile: false,
        depth: 1},
       {:swoosh, "~> 1.16"},
+      {:oban, "~> 2.18"},
       {:req, "~> 0.5"},
       {:floki, "~> 0.36"},
       {:mox, "~> 1.1", only: :test},

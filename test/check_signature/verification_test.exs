@@ -1,53 +1,56 @@
 defmodule CheckSignature.VerificationTest do
-  use CheckSignature.DataCase, async: false
+  use CheckSignature.DataCase, async: true
 
-  import Mox
-
+  alias CheckSignature.Rulings
   alias CheckSignature.Signatures.Signature
   alias CheckSignature.Verification
-  alias CheckSignature.Verification.{MockSource, Ruling}
+  alias CheckSignature.Verification.Ruling
 
-  setup :set_mox_global
-  setup :verify_on_exit!
+  describe "check/1 — answered solely from the harvested index" do
+    test "a Signature in the index is :found, linking the harvested Ruling" do
+      Rulings.upsert_all("supreme_court", [
+        %{signature: "II CSK 1/20", url: "https://sn.test/1", court: "SN"}
+      ])
 
-  setup do
-    stub(MockSource, :name, fn -> "Mock court" end)
-    :ok
+      assert %{status: :found, matches: [%{source: "Sąd Najwyższy", ruling: %Ruling{url: url}}]} =
+               Verification.check(Signature.new("II CSK 1/20"))
+
+      assert url == "https://sn.test/1"
+    end
+
+    test "a Signature absent from the index is :inconclusive, never :not_found" do
+      assert %{status: :inconclusive, matches: [], checked: []} =
+               Verification.check(Signature.new("II CSK 999/20"))
+    end
+
+    test "a match is reported under each Source that harvested it" do
+      Rulings.upsert_all("supreme_court", [%{signature: "II CSK 1/20", url: "https://sn.test/1"}])
+
+      Rulings.upsert_all("administrative_courts", [
+        %{signature: "II CSK 1/20", url: "https://cbosa.test/1"}
+      ])
+
+      assert %{status: :found, matches: matches} =
+               Verification.check(Signature.new("II CSK 1/20"))
+
+      assert Enum.map(matches, & &1.source) |> Enum.sort() == [
+               "Sąd Najwyższy",
+               "Sądy administracyjne"
+             ]
+    end
   end
 
-  test "a match yields :found and is cached (source hit only once)" do
-    signature = Signature.new("II CSK 1/20")
+  describe "check_document/1" do
+    test "returns one Verdict per unique Signature in document order" do
+      Rulings.upsert_all("supreme_court", [%{signature: "II CSK 1/20", url: "https://sn.test/1"}])
 
-    expect(MockSource, :lookup, 1, fn _ ->
-      {:matched, %Ruling{signature: "II CSK 1/20", url: "https://example.test/1"}}
-    end)
+      doc = "Zob. II CSK 1/20 oraz rzekomy wyrok II CSK 999/20."
 
-    assert %{status: :found, matches: [%{source: "Mock court"}]} = Verification.check(signature)
-    # Second check is served from the cache — no further lookup (expect count = 1).
-    assert %{status: :found} = Verification.check(signature)
-  end
+      assert [%{status: :found}, %{status: :inconclusive}] = Verification.check_document(doc)
+    end
 
-  test "confirmed absence yields :not_found and is cached" do
-    signature = Signature.new("II CSK 2/20")
-    expect(MockSource, :lookup, 1, fn _ -> :confirmed_absent end)
-
-    assert %{status: :not_found} = Verification.check(signature)
-    assert %{status: :not_found} = Verification.check(signature)
-  end
-
-  test "an errored source yields :inconclusive and is NOT cached (re-checked)" do
-    signature = Signature.new("II CSK 3/20")
-    # Two lookups expected precisely because inconclusive results are never cached.
-    expect(MockSource, :lookup, 2, fn _ -> {:errored, :timeout} end)
-
-    assert %{status: :inconclusive} = Verification.check(signature)
-    assert %{status: :inconclusive} = Verification.check(signature)
-  end
-
-  test "a raised exception in a source is contained as an errored outcome" do
-    signature = Signature.new("II CSK 4/20")
-    expect(MockSource, :lookup, fn _ -> raise "portal exploded" end)
-
-    assert %{status: :inconclusive} = Verification.check(signature)
+    test "an empty document yields no verdicts" do
+      assert Verification.check_document("Brak sygnatur w tym piśmie.") == []
+    end
   end
 end

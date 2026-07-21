@@ -7,8 +7,28 @@ defmodule CheckSignature.Verification.Sources.AdministrativeCourtsTest do
 
   @hit File.read!("test/support/fixtures/cbosa_hit.html")
   @miss File.read!("test/support/fixtures/cbosa_miss.html")
+  @find File.read!("test/support/fixtures/cbosa_find_page.html")
 
   defp sig(s), do: Signature.new(s)
+
+  describe "parse_listing/1 (harvest enumeration) against a real /cbo/find page" do
+    test "extracts every result as a harvest entry with signature, url, and date" do
+      entries = CBOSA.parse_listing(@find)
+
+      # The fixture page holds 10 results.
+      assert length(entries) == 10
+
+      first = hd(entries)
+      assert first.signature == "II SA/Łd 580/25"
+      assert first.url =~ "https://orzeczenia.nsa.gov.pl/doc/"
+      assert first.court == "NSA/WSA"
+      assert first.decided_on == ~D[2026-07-17]
+    end
+
+    test "an empty/exhausted page yields no entries (harvest stop signal)" do
+      assert CBOSA.parse_listing("<html><body>nothing</body></html>") == []
+    end
+  end
 
   describe "parse/2 against real CBOSA fixtures" do
     test "matches the exact queried signature and links its ruling" do
