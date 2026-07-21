@@ -32,6 +32,22 @@ defmodule CheckSignature.RulingsTest do
       assert row.url == "https://ex.test/new"
     end
 
+    test "a second upsert refreshes the url via ON CONFLICT, keeping one row" do
+      import Ecto.Query
+      alias CheckSignature.Rulings.Ruling
+
+      Rulings.upsert_all("supreme_court", [
+        %{signature: "II CSK 1/20", url: "https://ex.test/old"}
+      ])
+
+      Rulings.upsert_all("supreme_court", [
+        %{signature: "II CSK 1/20", url: "https://ex.test/new"}
+      ])
+
+      assert Repo.aggregate(from(r in Ruling, where: r.source == "supreme_court"), :count) == 1
+      assert [%Ruling{url: "https://ex.test/new"}] = Rulings.lookup("II CSK 1/20")
+    end
+
     test "same signature under a different source is a distinct row" do
       Rulings.upsert_all("supreme_court", [entry("II CSK 1/20", 1)])
       Rulings.upsert_all("administrative_courts", [entry("II CSK 1/20", 9)])
@@ -41,6 +57,16 @@ defmodule CheckSignature.RulingsTest do
 
     test "empty list is a no-op" do
       assert {0, nil} = Rulings.upsert_all("supreme_court", [])
+    end
+
+    test "collapses duplicate signatures within one batch (no ON CONFLICT crash)" do
+      assert {1, nil} =
+               Rulings.upsert_all("common_courts", [
+                 %{signature: "I ACa 5/19", url: "https://ex.test/a"},
+                 %{signature: "I ACa 5/19", url: "https://ex.test/b"}
+               ])
+
+      assert [_one] = Rulings.lookup("I ACA 5/19")
     end
   end
 

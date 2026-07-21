@@ -27,7 +27,8 @@ defmodule CheckSignature.Rulings do
     now = DateTime.truncate(DateTime.utc_now(), :second)
 
     rows =
-      Enum.map(entries, fn entry ->
+      entries
+      |> Enum.map(fn entry ->
         %{
           source: source,
           signature_normalized: Signature.normalize(to_string(entry[:signature])),
@@ -36,6 +37,9 @@ defmodule CheckSignature.Rulings do
           updated_at: now
         }
       end)
+      # A page can list the same signature twice; Postgres rejects an ON CONFLICT
+      # that touches the same row twice in one insert, so collapse duplicates first.
+      |> Enum.uniq_by(& &1.signature_normalized)
 
     Repo.insert_all(Ruling, rows,
       on_conflict: {:replace, [:url, :updated_at]},
