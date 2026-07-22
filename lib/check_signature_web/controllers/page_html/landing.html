@@ -410,7 +410,9 @@ footer{padding:34px 0;font-size:.85rem;color:var(--ink-soft);}
       navToggle.setAttribute("aria-expanded", open ? "true" : "false");
     });
     navLinks.addEventListener("click", function(e){
-      if(e.target.closest("a")){
+      var a = e.target.closest("a");
+      if(a){
+        track("Menu", { item: (a.textContent || "").trim() });
         navLinks.classList.remove("open");
         navToggle.setAttribute("aria-expanded", "false");
       }
@@ -528,6 +530,11 @@ footer{padding:34px 0;font-size:.85rem;color:var(--ink-soft);}
     notice.hidden = false;
   }
 
+  // Fire a Plausible custom event; a no-op if the script is blocked/unloaded.
+  function track(name, props){
+    if(window.plausible) window.plausible(name, props ? { props: props } : undefined);
+  }
+
   btn.addEventListener("click", function(){
     notice.hidden = true;
     var text = doc.value.trim();
@@ -539,10 +546,12 @@ footer{padding:34px 0;font-size:.85rem;color:var(--ink-soft);}
     var sigs = extract(text);
     if(!sigs.length){
       results.hidden = true;
+      track("No Signatures");
       showNotice("Nie wykryliśmy żadnej sygnatury w tym tekście. Jeśli dokument powołuje orzeczenia, a mimo to nic nie znaleźliśmy — napisz do nas: kontakt@orzecze-nie.pl. Pominięta sygnatura to dla nas najpoważniejszy błąd.");
       return;
     }
 
+    track("Check", { signatures: sigs.length });
     renderPending(sigs);
     btn.disabled = true;
     btn.textContent = "Weryfikuję…";
@@ -559,12 +568,21 @@ footer{padding:34px 0;font-size:.85rem;color:var(--ink-soft);}
     .then(function(data){
       var verdicts = (data && data.verdicts) || [];
       if(!verdicts.length) throw new Error("empty");
+      var counts = { found: 0, not_found: 0, inconclusive: 0 };
+      verdicts.forEach(function(v){ counts[v.verdict] = (counts[v.verdict] || 0) + 1; });
+      track("Result", {
+        signatures: verdicts.length,
+        found: counts.found,
+        not_found: counts.not_found,
+        inconclusive: counts.inconclusive
+      });
       resultsLabel.textContent = "Werdykty — " + verdicts.length + " " + plural(verdicts.length);
       resultsList.innerHTML = verdicts.map(renderRow).join("");
     })
     .catch(function(){
       /* Backend niedostępny: uczciwie pokazujemy stan „nierozstrzygnięta”
          dla każdej wykrytej sygnatury — brak odpowiedzi to nie brak orzeczenia. */
+      track("Check Failed");
       resultsLabel.textContent = "Werdykty — " + sigs.length + " " + plural(sigs.length);
       resultsList.innerHTML = sigs.map(function(sig, i){
         return renderRow({ signature: sig, verdict: "inconclusive", sources: [] }, i);
@@ -576,6 +594,21 @@ footer{padding:34px 0;font-size:.85rem;color:var(--ink-soft);}
       btn.textContent = "Sprawdź sygnatury";
     });
   });
+
+  // Scroll depth: fire "Scroll" once per 25/50/75/100% milestone reached.
+  (function(){
+    var fired = {}, marks = [25, 50, 75, 100];
+    function onScroll(){
+      var h = document.documentElement;
+      var max = h.scrollHeight - h.clientHeight;
+      if(max <= 0) return;
+      var pct = (window.pageYOffset || h.scrollTop) / max * 100;
+      marks.forEach(function(m){
+        if(pct >= m && !fired[m]){ fired[m] = true; track("Scroll", { depth: m }); }
+      });
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+  })();
 })();
 </script>
 
