@@ -16,8 +16,6 @@ defmodule CheckSignature.Verification.Sources.SupremeCourt do
 
   @behaviour CheckSignature.Verification.Source
 
-  require Logger
-
   alias CheckSignature.Signatures.Signature
   alias CheckSignature.Verification.{Ruling, Verdict}
   alias CheckSignature.Verification.Sources.Retry
@@ -88,13 +86,10 @@ defmodule CheckSignature.Verification.Sources.SupremeCourt do
         {parse_listing(body), next}
 
       other ->
-        Logger.warning("SupremeCourt.harvest_page/1 stopping at #{iso}: #{inspect(other)}")
-        {[], :done}
+        # Fail the job so Oban retries from the same cursor — never silently end
+        # the backfill chain on a transient error.
+        raise "SupremeCourt harvest failed at #{iso}: #{inspect(other)}"
     end
-  rescue
-    e ->
-      Logger.warning("SupremeCourt.harvest_page/1 raised: #{Exception.message(e)}")
-      {[], :done}
   end
 
   defp harvest_date(nil), do: Date.utc_today()

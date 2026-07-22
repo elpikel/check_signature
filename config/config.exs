@@ -89,6 +89,9 @@ config :check_signature, Oban,
   ],
   plugins: [
     {Oban.Plugins.Pruner, max_age: 60 * 60 * 24 * 7},
+    # Rescue jobs orphaned by a restart/deploy (back to available) so a long
+    # backfill chain resumes from its cursor instead of stranding mid-run.
+    {Oban.Plugins.Lifeline, rescue_after: :timer.minutes(30)},
     # All three Sources harvest on the hour: SN and CBOSA scrape their official
     # portals; common courts is harvested from SAOS (the official portal is behind
     # a browser-only bot wall). Staggered minutes keep DB writes from colliding.

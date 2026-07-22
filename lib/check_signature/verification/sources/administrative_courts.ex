@@ -16,8 +16,6 @@ defmodule CheckSignature.Verification.Sources.AdministrativeCourts do
 
   @behaviour CheckSignature.Verification.Source
 
-  require Logger
-
   alias CheckSignature.Signatures.Signature
   alias CheckSignature.Verification.{Ruling, Verdict}
   alias CheckSignature.Verification.Sources.Retry
@@ -81,18 +79,10 @@ defmodule CheckSignature.Verification.Sources.AdministrativeCourts do
         end
 
       other ->
-        # Don't loop on a blocked/errored page: end this run and let the next
-        # scheduled harvest resume from the top (incremental) or retry the sweep.
-        Logger.warning(
-          "AdministrativeCourts.harvest_page/1 stopping at p=#{page}: #{inspect(other)}"
-        )
-
-        {[], :done}
+        # Fail the job so Oban retries from the same cursor — never silently end
+        # the backfill chain on a transient block.
+        raise "AdministrativeCourts harvest failed at p=#{page}: #{inspect(other)}"
     end
-  rescue
-    e ->
-      Logger.warning("AdministrativeCourts.harvest_page/1 raised: #{Exception.message(e)}")
-      {[], :done}
   end
 
   defp page_number(nil), do: 1

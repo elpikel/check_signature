@@ -18,8 +18,6 @@ defmodule CheckSignature.Verification.Sources.CommonCourts do
 
   @behaviour CheckSignature.Verification.Source
 
-  require Logger
-
   alias CheckSignature.Signatures.Signature
   alias CheckSignature.Verification.Verdict
 
@@ -70,13 +68,10 @@ defmodule CheckSignature.Verification.Sources.CommonCourts do
         end
 
       other ->
-        Logger.warning("CommonCourts.harvest_page/1 stopping at page=#{page}: #{inspect(other)}")
-        {[], :done}
+        # Fail the job so Oban retries from the same cursor — never silently end
+        # the backfill chain on a transient error.
+        raise "CommonCourts harvest failed at page #{page}: #{inspect(other)}"
     end
-  rescue
-    e ->
-      Logger.warning("CommonCourts.harvest_page/1 raised: #{Exception.message(e)}")
-      {[], :done}
   end
 
   # SAOS paging is 0-based.
